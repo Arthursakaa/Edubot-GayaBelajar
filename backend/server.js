@@ -57,8 +57,8 @@ app.post("/simpan-hasil", async (req, res) => {
 
     const query = `
         INSERT INTO hasil_tes 
-        (nama, visual, auditory, kinesthetic, hasil)
-        VALUES (?, ?, ?, ?, ?)
+        (nama, visual, auditory, kinesthetic, hasil, created_at)
+        VALUES (?, ?, ?, ?, ?, CURDATE())
     `;
 
     db.query(
