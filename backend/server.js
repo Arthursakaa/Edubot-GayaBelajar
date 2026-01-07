@@ -8,13 +8,19 @@ app.use(cors());
 app.use(express.json());
 
 // ==========================
-// KONEKSI DATABASE
+// ENV
+// ==========================
+const PORT = process.env.PORT || 3000;
+const ML_URL = process.env.ML_URL || "http://localhost:5000";
+
+// ==========================
+// DATABASE
 // ==========================
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "tes_gaya_belajar"
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASS || "",
+    database: process.env.DB_NAME || "tes_gaya_belajar"
 });
 
 db.connect(err => {
@@ -26,27 +32,21 @@ db.connect(err => {
 });
 
 // ==========================
-// ROUTE SIMPAN HASIL + ML
+// ROUTE
 // ==========================
 app.post("/simpan-hasil", async (req, res) => {
     console.log("📥 DATA MASUK:", req.body);
     
-    const { nama, visual, auditory, kinesthetic, hasil } = req.body;
+    const { nama, visual, auditory, kinesthetic } = req.body;
 
     try {
-        // 🔥 PANGGIL ML PYTHON
         const mlResponse = await axios.post(
-            "http://localhost:5000/predict",
-            {
-                visual,
-                auditory,
-                kinesthetic
-            }
+            `${ML_URL}/predict`,
+            { visual, auditory, kinesthetic }
         );
 
         const hasil_ml = mlResponse.data.hasil;
 
-        // 🔥 SIMPAN KE MYSQL
         const query = `
             INSERT INTO hasil_tes 
             (nama, visual, auditory, kinesthetic, hasil)
@@ -59,9 +59,7 @@ app.post("/simpan-hasil", async (req, res) => {
             (err) => {
                 if (err) {
                     console.error("❌ INSERT ERROR:", err);
-                    return res.status(500).json({
-                        message: "Gagal simpan data"
-                    });
+                    return res.status(500).json({ message: "Gagal simpan data" });
                 }
 
                 res.json({
@@ -73,12 +71,10 @@ app.post("/simpan-hasil", async (req, res) => {
 
     } catch (error) {
         console.error("❌ ML ERROR:", error.message);
-        res.status(500).json({
-            message: "Gagal memproses ML"
-        });
+        res.status(500).json({ message: "Gagal memproses ML" });
     }
 });
 
-app.listen(3000, () => {
-    console.log("🚀 Server running at http://localhost:3000");
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
 });
