@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Hasil Tes Gaya Belajar - Edubot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- Navbar sama dengan index -->
+    <script src="components/navbar.js"></script>
+</head>
+
+<body class="bg-gradient-to-b from-blue-50 to-yellow-100 min-h-screen">
+
+<custom-navbar></custom-navbar>
+
+<div class="flex justify-center py-10 px-4">
+<div class="bg-white p-8 rounded-2xl shadow-lg max-w-xl w-full text-center">
+
+    <!-- Judul -->
+    <h1 class="text-2xl md:text-3xl font-bold text-blue-600 mb-3">
+        🎉 Hasil Tes Gaya Belajar 🎉
+    </h1>
+
+    <!-- Sapaan -->
+    <p class="text-gray-700 text-lg mb-1">
+        Halo, <span id="nama-user" class="font-bold text-blue-600"></span> 👋
+    </p>
+
+    <p class="text-gray-600 mb-6">
+        Berikut adalah hasil tes gaya belajar kamu:
+    </p>
+
+    <!-- Icon -->
+    <div class="mb-4">
+        <i id="result-icon" class="w-14 h-14 mx-auto text-blue-500"></i>
+    </div>
+
+    <!-- Hasil -->
+    <h2 id="result-title" class="text-xl font-bold mb-3"></h2>
+
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+        <p id="result-desc" class="text-gray-700 leading-relaxed"></p>
+    </div>
+
+    <!-- Rekomendasi -->
+    <div class="bg-yellow-50 border border-yellow-200 p-5 rounded-xl text-left mb-6">
+        <h3 class="font-semibold text-gray-800 mb-3">
+            📚 Tips Belajar yang Cocok Buat Kamu:
+        </h3>
+        <ul id="result-tips" class="list-disc list-inside text-gray-700 space-y-1"></ul>
+    </div>
+
+    <!-- Motivasi -->
+    <p class="text-gray-700 mb-8">
+        ✨ Ingat ya, setiap anak itu pintar dengan caranya masing-masing.  
+        Terus semangat belajar dan jangan takut mencoba hal baru! ✨
+    </p>
+
+    <!-- Tombol -->
+    <div class="flex flex-col sm:flex-row justify-center gap-4">
+        <a href="quiz.html"
+           class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold transition">
+            🔁 Ulangi Tes
+        </a>
+        <a href="index.html"
+           class="bg-gray-200 hover:bg-gray-300 px-5 py-2 rounded-lg font-semibold transition">
+            🏠 Kembali ke Beranda
+        </a>
+    </div>
+
+</div>
+</div>
+
+<script>
+feather.replace();
+
+/* ===== DATA HASIL ===== */
+const hasilData = {
+    "visual": {
+        title: "Gaya Belajar Visual 👀",
+        icon: "eye",
+        desc: "Kamu adalah anak yang hebat dalam belajar dengan melihat. Gambar, warna, dan video sangat membantumu memahami pelajaran. Jika kamu melihat sesuatu, otakmu cepat mengingatnya!",
+        tips: [
+            "Gunakan gambar atau ilustrasi saat belajar",
+            "Pakai warna-warna pada catatan",
+            "Belajar lewat video edukasi"
+        ]
+    },
+    "auditory": {
+        title: "Gaya Belajar Auditori 🎧",
+        icon: "headphones",
+        desc: "Kamu belajar paling baik dengan mendengarkan. Saat guru menjelaskan atau saat kamu berdiskusi, kamu bisa lebih cepat memahami pelajaran.",
+        tips: [
+            "Belajar sambil mendengarkan penjelasan",
+            "Diskusi dengan teman",
+            "Membaca pelajaran dengan suara keras"
+        ]
+    },
+    "kinesthetic": {
+        title: "Gaya Belajar Kinestetik 🤸",
+        icon: "activity",
+        desc: "Kamu adalah anak yang aktif dan suka bergerak. Kamu akan lebih mudah belajar jika langsung mencoba, mempraktikkan, atau bermain sambil belajar.",
+        tips: [
+            "Belajar sambil praktik langsung",
+            "Gunakan alat peraga",
+            "Belajar sambil bergerak"
+        ]
+    },
+    "visual-auditory": {
+        title: "Visual & Auditori 👀🎧",
+        icon: "layers",
+        desc: "Kamu hebat karena bisa belajar dengan melihat dan mendengarkan sekaligus. Video dan penjelasan guru sangat cocok untukmu.",
+        tips: [
+            "Belajar lewat video pembelajaran",
+            "Mendengarkan penjelasan sambil melihat gambar",
+            "Presentasi bergambar"
+        ]
+    },
+    "visual-kinesthetic": {
+        title: "Visual & Kinestetik 👀🤸",
+        icon: "move",
+        desc: "Kamu belajar paling baik jika melihat lalu langsung mencoba. Kamu suka belajar dengan gambar dan aktivitas.",
+        tips: [
+            "Belajar dengan diagram lalu praktik",
+            "Gunakan alat peraga",
+            "Eksperimen sederhana"
+        ]
+    },
+    "auditory-kinesthetic": {
+        title: "Auditori & Kinestetik 🎧🤸",
+        icon: "mic",
+        desc: "Kamu senang belajar sambil mendengarkan dan bergerak. Diskusi dan permainan edukatif sangat cocok untukmu.",
+        tips: [
+            "Diskusi aktif dengan teman",
+            "Belajar sambil bermain peran",
+            "Simulasi dan praktik"
+        ]
+    },
+    "visual-auditory-kinesthetic": {
+        title: "Gaya Belajar Campuran 🌈",
+        icon: "grid",
+        desc: "Kamu luar biasa karena bisa belajar dengan berbagai cara! Kamu fleksibel dan mudah menyesuaikan diri dengan banyak metode belajar.",
+        tips: [
+            "Gabungkan melihat, mendengar, dan praktik",
+            "Belajar dengan cara yang bervariasi",
+            "Cari cara belajar yang paling kamu suka"
+        ]
+    }
+};
+
+/* ===== AMBIL DATA ===== */
+const params = new URLSearchParams(window.location.search);
+const style = params.get("style");
+
+const nama = localStorage.getItem("nama_peserta") || "Peserta";
+document.getElementById("nama-user").textContent = nama;
+
+const result = hasilData[style] || hasilData["visual-auditory-kinesthetic"];
+document.getElementById("result-title").textContent = result.title;
+document.getElementById("result-desc").textContent = result.desc;
+document.getElementById("result-icon").setAttribute("data-feather", result.icon);
+
+const tipsEl = document.getElementById("result-tips");
+result.tips.forEach(tip => {
+    const li = document.createElement("li");
+    li.textContent = tip;
+    tipsEl.appendChild(li);
+});
+
+feather.replace();
+</script>
+
+</body>
+</html>

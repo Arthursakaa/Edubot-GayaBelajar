@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Tes Gaya Belajar - Edubot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- NAVBAR (SAMA DENGAN INDEX) -->
+    <script src="components/navbar.js"></script>
+</head>
+
+<body class="bg-gradient-to-b from-yellow-100 to-blue-50 min-h-screen">
+
+<custom-navbar></custom-navbar>
+
+<div class="flex justify-center py-10">
+
+<!-- ===== HALAMAN INPUT NAMA ===== -->
+<div id="start-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-6 text-blue-600">
+        Tes Gaya Belajar
+    </h1>
+
+    <label class="block mb-2 font-medium text-gray-700">
+        Nama Peserta
+    </label>
+    <input
+        type="text"
+        id="nama-input"
+        class="w-full p-3 border rounded-lg mb-4"
+        placeholder="Masukkan nama kamu"
+    >
+
+    <button
+        id="start-btn"
+        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg"
+    >
+        Mulai Tes
+    </button>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div id="quiz-screen" class="hidden bg-white p-6 rounded-xl shadow-lg w-full max-w-2xl">
+
+    <p class="text-sm text-gray-600 mb-4">
+        Halo, <span id="nama-user" class="font-semibold"></span> 👋
+    </p>
+
+    <!-- Progress -->
+    <div class="mb-6">
+        <div class="flex justify-between mb-2">
+            <span class="text-sm font-medium text-blue-600">
+                Pertanyaan <span id="current-question">1</span>/10
+            </span>
+            <span class="text-sm font-medium text-blue-600">
+                <span id="progress-percent">0</span>%
+            </span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+            <div id="progress-fill" class="bg-blue-500 h-2 rounded-full"></div>
+        </div>
+    </div>
+
+    <!-- Pertanyaan -->
+    <h2 id="question-text" class="text-xl font-semibold mb-6"></h2>
+
+    <!-- Jawaban -->
+    <div class="space-y-4 mb-8">
+        <button class="answer-btn w-full text-left p-4 rounded-lg border bg-blue-50 hover:bg-blue-100 transition" data-style="visual"></button>
+        <button class="answer-btn w-full text-left p-4 rounded-lg border bg-blue-50 hover:bg-blue-100 transition" data-style="auditory"></button>
+        <button class="answer-btn w-full text-left p-4 rounded-lg border bg-blue-50 hover:bg-blue-100 transition" data-style="kinesthetic"></button>
+    </div>
+
+    <!-- Navigasi -->
+    <div class="flex justify-between">
+        <button id="prev-btn" class="opacity-0 bg-gray-200 px-4 py-2 rounded-lg">
+            <i data-feather="arrow-left"></i> Sebelumnya
+        </button>
+        <button id="next-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">
+            Selanjutnya <i data-feather="arrow-right"></i>
+        </button>
+    </div>
+
+</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
