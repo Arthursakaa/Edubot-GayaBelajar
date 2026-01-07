@@ -11,21 +11,22 @@ app.use(express.json());
 // ENV
 // ==========================
 const PORT = process.env.PORT || 3000;
-const ML_URL = process.env.ML_URL || "http://localhost:5000";
+const ML_URL = process.env.ML_URL; // ⚠️ TANPA default localhost
 
 // ==========================
-// DATABASE
+// DATABASE (WAJIB CLOUD)
 // ==========================
 const db = mysql.createConnection({
-    host: process.env.DB_HOST || "localhost",
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASS || "",
-    database: process.env.DB_NAME || "tes_gaya_belajar"
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT || 3306
 });
 
 db.connect(err => {
     if (err) {
-        console.error("❌ DB ERROR:", err);
+        console.error("❌ DB ERROR:", err.message);
     } else {
         console.log("✅ MySQL connected");
     }
@@ -36,43 +37,45 @@ db.connect(err => {
 // ==========================
 app.post("/simpan-hasil", async (req, res) => {
     console.log("📥 DATA MASUK:", req.body);
-    
-    const { nama, visual, auditory, kinesthetic } = req.body;
 
-    try {
-        const mlResponse = await axios.post(
-            `${ML_URL}/predict`,
-            { visual, auditory, kinesthetic }
-        );
+    const { nama, visual, auditory, kinesthetic, hasil } = req.body;
 
-        const hasil_ml = mlResponse.data.hasil;
+    let hasil_final = hasil; // fallback dari frontend
 
-        const query = `
-            INSERT INTO hasil_tes 
-            (nama, visual, auditory, kinesthetic, hasil)
-            VALUES (?, ?, ?, ?, ?)
-        `;
-
-        db.query(
-            query,
-            [nama, visual, auditory, kinesthetic, hasil_ml],
-            (err) => {
-                if (err) {
-                    console.error("❌ INSERT ERROR:", err);
-                    return res.status(500).json({ message: "Gagal simpan data" });
-                }
-
-                res.json({
-                    message: "✅ Data berhasil disimpan",
-                    hasil: hasil_ml
-                });
-            }
-        );
-
-    } catch (error) {
-        console.error("❌ ML ERROR:", error.message);
-        res.status(500).json({ message: "Gagal memproses ML" });
+    // 🔥 JIKA ML SUDAH ADA
+    if (ML_URL) {
+        try {
+            const mlResponse = await axios.post(
+                `${ML_URL}/predict`,
+                { visual, auditory, kinesthetic }
+            );
+            hasil_final = mlResponse.data.hasil;
+        } catch (err) {
+            console.warn("⚠️ ML tidak tersedia, pakai hasil frontend");
+        }
     }
+
+    const query = `
+        INSERT INTO hasil_tes 
+        (nama, visual, auditory, kinesthetic, hasil)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    db.query(
+        query,
+        [nama, visual, auditory, kinesthetic, hasil_final],
+        err => {
+            if (err) {
+                console.error("❌ INSERT ERROR:", err.message);
+                return res.status(500).json({ message: "Gagal simpan data" });
+            }
+
+            res.json({
+                message: "✅ Data berhasil disimpan",
+                hasil: hasil_final
+            });
+        }
+    );
 });
 
 app.listen(PORT, () => {
