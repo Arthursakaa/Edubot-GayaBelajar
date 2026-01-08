@@ -17,11 +17,11 @@ const ML_URL = process.env.ML_URL;
 // DATABASE
 // ======================
 const db = mysql.createConnection({
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
   database: process.env.MYSQL_DATABASE,
-  port: process.env.MYSQLPORT
+  port: process.env.MYSQL_PORT
 });
 
 db.connect(err => {
