@@ -1,56 +1,16 @@
 feather.replace();
 
 const questions = [
-    { text:"Saat guru menjelaskan pelajaran, aku lebih suka…", options:[
-        "A. Melihat gambar atau tulisan",
-        "B. Mendengarkan penjelasan",
-        "C. Mencoba langsung"
-    ]},
-    { text:"Jika belajar di rumah, aku senang…", options:[
-        "A. Melihat video",
-        "B. Mendengarkan orang lain",
-        "C. Belajar sambil bergerak"
-    ]},
-    { text:"Saat menghafal pelajaran, aku…", options:[
-        "A. Melihat catatan",
-        "B. Membaca keras",
-        "C. Menulis sambil berjalan"
-    ]},
-    { text:"Aku cepat paham jika…", options:[
-        "A. Ada gambar",
-        "B. Dijelaskan",
-        "C. Mencoba sendiri"
-    ]},
-    { text:"Saat guru bertanya, aku…", options:[
-        "A. Melihat contoh",
-        "B. Mendengar ulang",
-        "C. Maju mencoba"
-    ]},
-    { text:"Jika bosan belajar, aku…", options:[
-        "A. Menggambar",
-        "B. Mengobrol",
-        "C. Bergerak"
-    ]},
-    { text:"Aku mudah ingat jika…", options:[
-        "A. Ada warna",
-        "B. Dijelaskan suara",
-        "C. Dilakukan"
-    ]},
-    { text:"Saat ada tugas, aku senang…", options:[
-        "A. Ada contoh",
-        "B. Dijelaskan",
-        "C. Langsung praktik"
-    ]},
-    { text:"Belajar kelompok, aku…", options:[
-        "A. Melihat catatan",
-        "B. Mendengar teman",
-        "C. Aktif bergerak"
-    ]},
-    { text:"Aku suka belajar dengan…", options:[
-        "A. Gambar & video",
-        "B. Penjelasan",
-        "C. Bermain"
-    ]}
+    { text:"Saat guru menjelaskan pelajaran, aku lebih suka…", options:["A. Melihat gambar atau tulisan","B. Mendengarkan penjelasan","C. Mencoba langsung"]},
+    { text:"Jika belajar di rumah, aku senang…", options:["A. Melihat video","B. Mendengarkan orang lain","C. Belajar sambil bergerak"]},
+    { text:"Saat menghafal pelajaran, aku…", options:["A. Melihat catatan","B. Membaca keras","C. Menulis sambil berjalan"]},
+    { text:"Aku cepat paham jika…", options:["A. Ada gambar","B. Dijelaskan","C. Mencoba sendiri"]},
+    { text:"Saat guru bertanya, aku…", options:["A. Melihat contoh","B. Mendengar ulang","C. Maju mencoba"]},
+    { text:"Jika bosan belajar, aku…", options:["A. Menggambar","B. Mengobrol", "C. Bergerak"]},
+    { text:"Aku mudah ingat jika…", options:["A. Ada warna","B. Dijelaskan suara","C. Dilakukan"]},
+    { text:"Saat ada tugas, aku senang…", options:["A. Ada contoh","B. Dijelaskan","C. Langsung praktik"]},
+    { text:"Belajar kelompok, aku…", options:["A. Melihat catatan","B. Mendengar teman","C. Aktif bergerak"]},
+    { text:"Aku suka belajar dengan…", options:["A. Gambar & video","B. Penjelasan","C. Bermain"]}
 ];
 
 let currentQuestion = 0;
@@ -78,22 +38,23 @@ function showQuestion(index){
     const q = questions[index];
     questionText.textContent = q.text;
 
-    answerButtons.forEach((btn,i)=>{
+    answerButtons.forEach((btn, i) => {
         btn.textContent = q.options[i];
-        btn.classList.remove("bg-blue-200","border-blue-400");
+        btn.classList.remove("bg-blue-200", "border-blue-400");
+        // Mencocokkan dataset style (visual/auditory/kinesthetic) dengan jawaban yang disimpan
         if(userAnswers[index] === btn.dataset.style){
-            btn.classList.add("bg-blue-200","border-blue-400");
+            btn.classList.add("bg-blue-200", "border-blue-400");
         }
     });
 
     currentQuestionSpan.textContent = index + 1;
-    const progress = ((index+1)/questions.length)*100;
-    progressFill.style.width = progress+"%";
+    const progress = ((index + 1) / questions.length) * 100;
+    progressFill.style.width = progress + "%";
     progressPercent.textContent = Math.round(progress);
 
-    prevBtn.classList.toggle("opacity-0", index===0);
+    prevBtn.classList.toggle("opacity-0", index === 0);
 
-    nextBtn.innerHTML = index === questions.length-1
+    nextBtn.innerHTML = index === questions.length - 1
         ? 'Lihat Hasil <i data-feather="award"></i>'
         : 'Selanjutnya <i data-feather="arrow-right"></i>';
 
@@ -101,8 +62,12 @@ function showQuestion(index){
 }
 
 function calculateScores(){
-    scores.visual = scores.auditory = scores.kinesthetic = 0;
-    userAnswers.forEach(ans => { if(ans) scores[ans]++; });
+    scores.visual = 0;
+    scores.auditory = 0;
+    scores.kinesthetic = 0;
+    userAnswers.forEach(ans => { 
+        if(ans) scores[ans]++; 
+    });
 }
 
 function calculateLearningStyle(){
@@ -112,20 +77,6 @@ function calculateLearningStyle(){
     if(scores.auditory === max) result.push("auditory");
     if(scores.kinesthetic === max) result.push("kinesthetic");
     return result.join("-");
-}
-
-function kirimKeBackend(hasil){
-    fetch("https://edubot-gayabelajar-production.up.railway.app/simpan-hasil",{
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body:JSON.stringify({
-            nama: namaPeserta,
-            visual: scores.visual,
-            auditory: scores.auditory,
-            kinesthetic: scores.kinesthetic,
-            hasil: hasil
-        })
-    });
 }
 
 /* ===== EVENT ===== */
@@ -145,10 +96,10 @@ startBtn.onclick = () => {
     showQuestion(0);
 };
 
-answerButtons.forEach(btn=>{
+answerButtons.forEach(btn => {
     btn.onclick = () => {
-        answerButtons.forEach(b=>b.classList.remove("bg-blue-200","border-blue-400"));
-        btn.classList.add("bg-blue-200","border-blue-400");
+        answerButtons.forEach(b => b.classList.remove("bg-blue-200", "border-blue-400"));
+        btn.classList.add("bg-blue-200", "border-blue-400");
         userAnswers[currentQuestion] = btn.dataset.style;
     };
 });
@@ -166,32 +117,37 @@ nextBtn.onclick = () => {
         return;
     }
 
-    if(currentQuestion < questions.length-1){
+    if(currentQuestion < questions.length - 1){
         currentQuestion++;
         showQuestion(currentQuestion);
-} else {
-    calculateScores();
-    const hasil = calculateLearningStyle();
+    } else {
+        // PROSES KIRIM DATA & LIHAT HASIL
+        nextBtn.disabled = true;
+        nextBtn.textContent = "Mengirim...";
 
-    fetch("https://edubot-gayabelajar-production.up.railway.app/simpan-hasil", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nama: namaPeserta,
-        visual: scores.visual,
-        auditory: scores.auditory,
-        kinesthetic: scores.kinesthetic,
-        hasil: hasil
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      window.location.href = `result.html?style=${data.hasil || hasil}`;
-    })
-    .catch(err => {
-      console.error("Gagal kirim data:", err);
-      window.location.href = `result.html?style=${hasil}`;
-    });
-}
+        calculateScores();
+        const hasil = calculateLearningStyle();
 
+        fetch("https://edubot-gayabelajar-production.up.railway.app/simpan-hasil", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                nama: namaPeserta,
+                visual: scores.visual,
+                auditory: scores.auditory,
+                kinesthetic: scores.kinesthetic,
+                hasil: hasil
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Pindah ke result.html menggunakan data dari backend (hasil ML atau aturan)
+            window.location.href = `result.html?style=${data.hasil || hasil}`;
+        })
+        .catch(err => {
+            console.error("Gagal kirim data:", err);
+            // Tetap pindah halaman jika gagal agar user bisa melihat hasil lokal
+            window.location.href = `result.html?style=${hasil}`;
+        });
+    }
 };
