@@ -128,7 +128,7 @@ nextBtn.onclick = () => {
         const hasilLokal = calculateLearningStyle();
 
         // Pastikan URL ini adalah URL Backend Node.js Anda
-        const API_URL = "https://edubot-gayabelajar-production.up.railway.app";
+        const API_URL = "https://edubot-gayabelajar-production.up.railway.app/simpan-hasil";
 
         fetch(API_URL, {
             method: "POST",
