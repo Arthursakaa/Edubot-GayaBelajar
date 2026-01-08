@@ -13,10 +13,13 @@ const db = mysql.createConnection(connectionConfig);
 
 db.connect(err => {
   if (err) {
-    console.error("❌ DB GAGAL TERHUBUNG:", err.message);
+    // Tambahkan log detail di sini
+    console.error("❌ DB GAGAL TERHUBUNG!");
+    console.error("Pesan Error:", err.message);
+    console.error("Kode Error:", err.code);
     return;
   }
-  console.log("✅ DB TERHUBUNG KE RAILWAY");
+  console.log("✅ DATABASE TERHUBUNG (RAILWAY)");
 });
 
 module.exports = db;
