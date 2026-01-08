@@ -7,77 +7,69 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ==========================
+// ======================
 // ENV
-// ==========================
+// ======================
 const PORT = process.env.PORT || 3000;
-const ML_URL = process.env.ML_URL; // ⚠️ TANPA default localhost
+const ML_URL = process.env.ML_URL || "http://localhost:5000";
 
-// ==========================
-// DATABASE (WAJIB CLOUD)
-// ==========================
+// ======================
+// DATABASE
+// ======================
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT || 3306
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT
 });
 
 db.connect(err => {
-    if (err) {
-        console.error("❌ DB ERROR:", err.message);
-    } else {
-        console.log("✅ MySQL connected");
-    }
+  if (err) {
+    console.error("❌ DB ERROR:", err);
+  } else {
+    console.log("✅ MySQL connected");
+  }
 });
 
-// ==========================
+// ======================
 // ROUTE
-// ==========================
+// ======================
 app.post("/simpan-hasil", async (req, res) => {
-    console.log("📥 DATA MASUK:", req.body);
+  const { nama, visual, auditory, kinesthetic } = req.body;
 
-    const { nama, visual, auditory, kinesthetic, hasil } = req.body;
+  try {
+    const mlResponse = await axios.post(`${ML_URL}/predict`, {
+      visual,
+      auditory,
+      kinesthetic
+    });
 
-    let hasil_final = hasil; // fallback dari frontend
-
-    // 🔥 JIKA ML SUDAH ADA
-    if (ML_URL) {
-        try {
-            const mlResponse = await axios.post(
-                `${ML_URL}/predict`,
-                { visual, auditory, kinesthetic }
-            );
-            hasil_final = mlResponse.data.hasil;
-        } catch (err) {
-            console.warn("⚠️ ML tidak tersedia, pakai hasil frontend");
-        }
-    }
+    const hasil_ml = mlResponse.data.hasil;
 
     const query = `
-        INSERT INTO hasil_tes 
-        (nama, visual, auditory, kinesthetic, hasil, created_at)
-        VALUES (?, ?, ?, ?, ?, CURDATE())
+      INSERT INTO hasil_tes
+      (nama, visual, auditory, kinesthetic, hasil)
+      VALUES (?, ?, ?, ?, ?)
     `;
 
     db.query(
-        query,
-        [nama, visual, auditory, kinesthetic, hasil_final],
-        err => {
-            if (err) {
-                console.error("❌ INSERT ERROR:", err.message);
-                return res.status(500).json({ message: "Gagal simpan data" });
-            }
-
-            res.json({
-                message: "✅ Data berhasil disimpan",
-                hasil: hasil_final
-            });
+      query,
+      [nama, visual, auditory, kinesthetic, hasil_ml],
+      err => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ message: "Gagal simpan" });
         }
+        res.json({ hasil: hasil_ml });
+      }
     );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ message: "ML Error" });
+  }
 });
 
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Backend running on port ${PORT}`);
 });
