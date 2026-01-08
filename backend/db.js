@@ -1,25 +1,28 @@
 const mysql = require("mysql2");
 
-// Gunakan MYSQL_URL jika ada, jika tidak ada gunakan objek konfigurasi
 const connectionConfig = process.env.MYSQL_URL || {
   host: process.env.MYSQLHOST,
   port: Number(process.env.MYSQLPORT) || 3306,
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE
+  database: process.env.MYSQLDATABASE,
+  waitForConnections: true,
+  connectionLimit: 5,
+  queueLimit: 0
 };
 
-const db = mysql.createConnection(connectionConfig);
+// Menggunakan Pool agar lebih stabil di Railway
+const db = mysql.createPool(connectionConfig);
 
-db.connect(err => {
+// Verifikasi koneksi awal
+db.getConnection((err, connection) => {
   if (err) {
-    // Tambahkan log detail di sini
     console.error("❌ DB GAGAL TERHUBUNG!");
     console.error("Pesan Error:", err.message);
-    console.error("Kode Error:", err.code);
-    return;
+  } else {
+    console.log("✅ DATABASE TERHUBUNG VIA POOL (RAILWAY)");
+    connection.release();
   }
-  console.log("✅ DATABASE TERHUBUNG (RAILWAY)");
 });
 
 module.exports = db;

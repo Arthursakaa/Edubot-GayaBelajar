@@ -5,9 +5,9 @@ const db = require("./db");
 
 const app = express();
 
-// 1. Tambahkan log untuk setiap request yang masuk (Debugging)
+// Middleware Logging
 app.use((req, res, next) => {
-  console.log(`Incoming Request: ${req.method} ${req.url}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
 });
 
@@ -17,56 +17,50 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const ML_URL = process.env.ML_URL;
 
+// Rute Akar (Cek status server)
+app.get("/", (req, res) => {
+  res.send("🚀 Backend Edubot is running and ready!");
+});
+
 app.post("/simpan-hasil", async (req, res) => {
-  // 2. Log data yang diterima dari Frontend
-  console.log("📦 Data received from Frontend:", req.body);
+  console.log("📦 Data diterima dari Frontend:", req.body);
 
   const { nama, visual, auditory, kinesthetic, hasil } = req.body;
   let hasilFinal = hasil;
 
-  // ===== ML Logic with Timeout =====
+  // ===== Proses ML (Optional) =====
   if (ML_URL) {
     try {
-      console.log("🤖 Attempting ML Prediction...");
+      console.log("🤖 Menghubungi ML Server...");
       const mlResponse = await axios.post(`${ML_URL}/predict`, {
-        visual,
-        auditory,
-        kinesthetic
-      }, { timeout: 3000 }); // Maksimal nunggu 3 detik agar tidak macet
+        visual, auditory, kinesthetic
+      }, { timeout: 4000 });
 
       if (mlResponse.data?.hasil) {
         hasilFinal = mlResponse.data.hasil;
-        console.log("✅ ML Prediction Success:", hasilFinal);
+        console.log("✅ ML Berhasil: ", hasilFinal);
       }
     } catch (err) {
-      console.warn("⚠️ ML skip/error, using frontend result.");
+      console.warn("⚠️ ML Gagal/Timeout, menggunakan hasil lokal.");
     }
   }
 
-  // ===== DB INSERT =====
+  // ===== Simpan ke Database =====
   const query = `
-    INSERT INTO hasil_tes 
-    (nama, visual, auditory, kinesthetic, hasil) 
+    INSERT INTO hasil_tes (nama, visual, auditory, kinesthetic, hasil) 
     VALUES (?, ?, ?, ?, ?)
   `;
 
-  db.query(
-    query,
-    [nama, visual, auditory, kinesthetic, hasilFinal],
-    (err, result) => {
-      if (err) {
-        console.error("❌ DATABASE ERROR:", err.message);
-        // Tetap kirim respon ke user meskipun DB gagal
-        return res.status(500).json({ error: "Database failure", detail: err.message });
-      } else {
-        console.log("✅ DATA SAVED TO DB! ID:", result.insertId);
-        // Kirim respon sukses
-        res.json({ success: true, hasil: hasilFinal });
-      }
+  db.query(query, [nama, visual, auditory, kinesthetic, hasilFinal], (err, result) => {
+    if (err) {
+      console.error("❌ ERROR DATABASE:", err.message);
+      return res.status(500).json({ success: false, error: err.message });
     }
-  );
+    console.log("✅ DATA TERSIMPAN! ID:", result.insertId);
+    res.json({ success: true, hasil: hasilFinal });
+  });
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Backend running on port ${PORT}`);
+  console.log(`🚀 Server aktif di port ${PORT}`);
 });
