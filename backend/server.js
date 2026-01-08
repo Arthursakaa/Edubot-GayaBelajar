@@ -1,7 +1,8 @@
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
 const axios = require("axios");
+// Memanggil koneksi database dari file db.js
+const db = require("./db"); 
 
 const app = express();
 app.use(cors());
@@ -14,19 +15,6 @@ const PORT = process.env.PORT || 3000;
 const ML_URL = process.env.ML_URL;
 
 // ======================
-// DATABASE
-// ======================
-const db = mysql.createConnection(process.env.MYSQL_URL);
-
-db.connect(err => {
-  if (err) {
-    console.error("❌ DB ERROR DETAIL:", err);
-  } else {
-    console.log("✅ MySQL connected");
-  }
-});
-
-// ======================
 // ROUTE
 // ======================
 app.post("/simpan-hasil", async (req, res) => {
@@ -36,23 +24,25 @@ app.post("/simpan-hasil", async (req, res) => {
 
   // ===== ML (optional) =====
   try {
-    const mlResponse = await axios.post(`${ML_URL}/predict`, {
-      visual,
-      auditory,
-      kinesthetic
-    });
+    if (ML_URL) {
+      const mlResponse = await axios.post(`${ML_URL}/predict`, {
+        visual,
+        auditory,
+        kinesthetic
+      });
 
-    if (mlResponse.data?.hasil) {
-      hasilFinal = mlResponse.data.hasil;
+      if (mlResponse.data?.hasil) {
+        hasilFinal = mlResponse.data.hasil;
+      }
     }
   } catch (err) {
-    console.warn("⚠️ ML gagal, pakai hasil frontend");
+    console.warn("⚠️ ML gagal atau ML_URL tidak diset, pakai hasil frontend");
   }
 
-  // ===== DB (non-blocking) =====
+  // ===== DB (menggunakan module db.js) =====
   const query = `
-    INSERT INTO hasil_tes
-    (nama, visual, auditory, kinesthetic, hasil)
+    INSERT INTO hasil_tes 
+    (nama, visual, auditory, kinesthetic, hasil) 
     VALUES (?, ?, ?, ?, ?)
   `;
 
@@ -66,13 +56,11 @@ app.post("/simpan-hasil", async (req, res) => {
     }
   );
 
-  // ===== RESPONSE (WAJIB) =====
+  // ===== RESPONSE =====
   res.json({ hasil: hasilFinal });
 });
 
-// ======================
-// START SERVER
-// ======================
+// Jalankan server
 app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
