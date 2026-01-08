@@ -36,34 +36,46 @@ db.connect(err => {
 // ROUTE
 // ======================
 app.post("/simpan-hasil", async (req, res) => {
-  const { nama, visual, auditory, kinesthetic } = req.body;
+  const { nama, visual, auditory, kinesthetic, hasil } = req.body;
+
+  let hasilFinal = hasil;
 
   try {
+    // 🔹 Coba pakai ML dulu
     const mlResponse = await axios.post(`${ML_URL}/predict`, {
       visual,
       auditory,
       kinesthetic
     });
 
-    const hasil_ml = mlResponse.data.hasil;
+    if (mlResponse.data?.hasil) {
+      hasilFinal = mlResponse.data.hasil;
+    }
+  } catch (err) {
+    console.warn("⚠️ ML gagal, pakai hasil frontend");
+  }
 
-    const query = `
-      INSERT INTO hasil_tes
-      (nama, visual, auditory, kinesthetic, hasil)
-      VALUES (?, ?, ?, ?, ?)
-    `;
+  // 🔹 Coba simpan DB (non-blocking)
+  const query = `
+    INSERT INTO hasil_tes
+    (nama, visual, auditory, kinesthetic, hasil)
+    VALUES (?, ?, ?, ?, ?)
+  `;
 
-    db.query(
-      query,
-      [nama, visual, auditory, kinesthetic, hasil_ml],
-      err => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ message: "Gagal simpan" });
-        }
-        res.json({ hasil: hasil_ml });
+  db.query(
+    query,
+    [nama, visual, auditory, kinesthetic, hasilFinal],
+    err => {
+      if (err) {
+        console.warn("⚠️ DB gagal simpan, lanjutkan:", err.message);
       }
-    );
+    }
+  );
+
+  // 🔹 PASTI balikin hasil
+  res.json({ hasil: hasilFinal });
+});
+
   } catch (err) {
     console.error(err.message);
     res.status(500).json({ message: "ML Error" });

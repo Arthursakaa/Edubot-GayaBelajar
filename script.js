@@ -169,23 +169,29 @@ nextBtn.onclick = () => {
     if(currentQuestion < questions.length-1){
         currentQuestion++;
         showQuestion(currentQuestion);
-    } else {
-calculateScores();
+} else {
+    calculateScores();
+    const hasil = calculateLearningStyle();
 
-fetch("https://edubot-gayabelajar-production.up.railway.app/simpan-hasil", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    nama: namaPeserta,
-    visual: scores.visual,
-    auditory: scores.auditory,
-    kinesthetic: scores.kinesthetic
-  })
-})
-.then(res => res.json())
-.then(data => {
-  window.location.href = `result.html?style=${data.hasil}`;
-});
+    fetch("https://edubot-gayabelajar-production.up.railway.app/simpan-hasil", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nama: namaPeserta,
+        visual: scores.visual,
+        auditory: scores.auditory,
+        kinesthetic: scores.kinesthetic,
+        hasil: hasil
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      window.location.href = `result.html?style=${data.hasil || hasil}`;
+    })
+    .catch(err => {
+      console.error("Gagal kirim data:", err);
+      window.location.href = `result.html?style=${hasil}`;
+    });
+}
 
-    }
 };
