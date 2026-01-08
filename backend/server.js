@@ -11,7 +11,7 @@ app.use(express.json());
 // ENV
 // ======================
 const PORT = process.env.PORT || 3000;
-const ML_URL = process.env.ML_URL || "http://localhost:5000";
+const ML_URL = process.env.ML_URL;
 
 // ======================
 // DATABASE
@@ -26,7 +26,7 @@ const db = mysql.createConnection({
 
 db.connect(err => {
   if (err) {
-    console.error("❌ DB ERROR:", err);
+    console.error("❌ DB ERROR:", err.message);
   } else {
     console.log("✅ MySQL connected");
   }
@@ -40,8 +40,8 @@ app.post("/simpan-hasil", async (req, res) => {
 
   let hasilFinal = hasil;
 
+  // ===== ML (optional) =====
   try {
-    // 🔹 Coba pakai ML dulu
     const mlResponse = await axios.post(`${ML_URL}/predict`, {
       visual,
       auditory,
@@ -55,7 +55,7 @@ app.post("/simpan-hasil", async (req, res) => {
     console.warn("⚠️ ML gagal, pakai hasil frontend");
   }
 
-  // 🔹 Coba simpan DB (non-blocking)
+  // ===== DB (non-blocking) =====
   const query = `
     INSERT INTO hasil_tes
     (nama, visual, auditory, kinesthetic, hasil)
@@ -67,21 +67,18 @@ app.post("/simpan-hasil", async (req, res) => {
     [nama, visual, auditory, kinesthetic, hasilFinal],
     err => {
       if (err) {
-        console.warn("⚠️ DB gagal simpan, lanjutkan:", err.message);
+        console.warn("⚠️ DB gagal simpan:", err.message);
       }
     }
   );
 
-  // 🔹 PASTI balikin hasil
+  // ===== RESPONSE (WAJIB) =====
   res.json({ hasil: hasilFinal });
 });
 
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ message: "ML Error" });
-  }
-});
-
+// ======================
+// START SERVER
+// ======================
 app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
