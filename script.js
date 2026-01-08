@@ -41,7 +41,6 @@ function showQuestion(index){
     answerButtons.forEach((btn, i) => {
         btn.textContent = q.options[i];
         btn.classList.remove("bg-blue-200", "border-blue-400");
-        // Mencocokkan dataset style (visual/auditory/kinesthetic) dengan jawaban yang disimpan
         if(userAnswers[index] === btn.dataset.style){
             btn.classList.add("bg-blue-200", "border-blue-400");
         }
@@ -121,14 +120,17 @@ nextBtn.onclick = () => {
         currentQuestion++;
         showQuestion(currentQuestion);
     } else {
-        // PROSES KIRIM DATA & LIHAT HASIL
+        // PROSES KIRIM DATA
         nextBtn.disabled = true;
-        nextBtn.textContent = "Mengirim...";
+        nextBtn.textContent = "Sedang Memproses...";
 
         calculateScores();
-        const hasil = calculateLearningStyle();
+        const hasilLokal = calculateLearningStyle();
 
-        fetch("https://edubot-gayabelajar-production.up.railway.app/simpan-hasil", {
+        // Pastikan URL ini adalah URL Backend Node.js Anda
+        const API_URL = "https://edubot-gayabelajar-production.up.railway.app/simpan-hasil";
+
+        fetch(API_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -136,18 +138,23 @@ nextBtn.onclick = () => {
                 visual: scores.visual,
                 auditory: scores.auditory,
                 kinesthetic: scores.kinesthetic,
-                hasil: hasil
+                hasil: hasilLokal
             })
         })
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error("Server bermasalah");
+            return res.json();
+        })
         .then(data => {
-            // Pindah ke result.html menggunakan data dari backend (hasil ML atau aturan)
-            window.location.href = `result.html?style=${data.hasil || hasil}`;
+            console.log("✅ Berhasil simpan:", data);
+            // Gunakan hasil dari ML (data.hasil) jika tersedia, jika tidak pakai hasil lokal
+            const finalStyle = data.hasil || hasilLokal;
+            window.location.href = `result.html?style=${finalStyle}`;
         })
         .catch(err => {
-            console.error("Gagal kirim data:", err);
-            // Tetap pindah halaman jika gagal agar user bisa melihat hasil lokal
-            window.location.href = `result.html?style=${hasil}`;
+            console.error("❌ Gagal kirim ke database:", err);
+            // Fallback: tetap arahkan ke halaman hasil meskipun gagal simpan ke DB
+            window.location.href = `result.html?style=${hasilLokal}`;
         });
     }
 };
