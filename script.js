@@ -115,7 +115,7 @@ function calculateLearningStyle(){
 }
 
 function kirimKeBackend(hasil){
-    fetch("http://localhost:3000/simpan-hasil",{
+    fetch("http://edubot-gayabelajar-production.up.railway.app/simpan-hasil",{
         method:"POST",
         headers:{ "Content-Type":"application/json" },
         body:JSON.stringify({
@@ -172,7 +172,7 @@ nextBtn.onclick = () => {
     } else {
 calculateScores();
 
-fetch("http://localhost:3000/simpan-hasil", {
+fetch("http://edubot-gayabelajar-production.up.railway.app/simpan-hasil", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
