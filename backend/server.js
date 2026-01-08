@@ -1,45 +1,49 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
-// Memanggil koneksi database dari file db.js
 const db = require("./db"); 
 
 const app = express();
+
+// 1. Tambahkan log untuk setiap request yang masuk (Debugging)
+app.use((req, res, next) => {
+  console.log(`Incoming Request: ${req.method} ${req.url}`);
+  next();
+});
+
 app.use(cors());
 app.use(express.json());
 
-// ======================
-// ENV
-// ======================
 const PORT = process.env.PORT || 3000;
 const ML_URL = process.env.ML_URL;
 
-// ======================
-// ROUTE
-// ======================
 app.post("/simpan-hasil", async (req, res) => {
-  const { nama, visual, auditory, kinesthetic, hasil } = req.body;
+  // 2. Log data yang diterima dari Frontend
+  console.log("📦 Data received from Frontend:", req.body);
 
+  const { nama, visual, auditory, kinesthetic, hasil } = req.body;
   let hasilFinal = hasil;
 
-  // ===== ML (optional) =====
-  try {
-    if (ML_URL) {
+  // ===== ML Logic with Timeout =====
+  if (ML_URL) {
+    try {
+      console.log("🤖 Attempting ML Prediction...");
       const mlResponse = await axios.post(`${ML_URL}/predict`, {
         visual,
         auditory,
         kinesthetic
-      });
+      }, { timeout: 3000 }); // Maksimal nunggu 3 detik agar tidak macet
 
       if (mlResponse.data?.hasil) {
         hasilFinal = mlResponse.data.hasil;
+        console.log("✅ ML Prediction Success:", hasilFinal);
       }
+    } catch (err) {
+      console.warn("⚠️ ML skip/error, using frontend result.");
     }
-  } catch (err) {
-    console.warn("⚠️ ML gagal atau ML_URL tidak diset, pakai hasil frontend");
   }
 
-  // ===== DB (menggunakan module db.js) =====
+  // ===== DB INSERT =====
   const query = `
     INSERT INTO hasil_tes 
     (nama, visual, auditory, kinesthetic, hasil) 
@@ -51,19 +55,18 @@ app.post("/simpan-hasil", async (req, res) => {
     [nama, visual, auditory, kinesthetic, hasilFinal],
     (err, result) => {
       if (err) {
-        // Ini akan memunculkan error detail di Railway Logs
-        console.error("❌ ERROR DATABASE SAAT INSERT:", err);
+        console.error("❌ DATABASE ERROR:", err.message);
+        // Tetap kirim respon ke user meskipun DB gagal
+        return res.status(500).json({ error: "Database failure", detail: err.message });
       } else {
-        console.log("✅ DATA BERHASIL DISIMPAN! ID:", result.insertId);
+        console.log("✅ DATA SAVED TO DB! ID:", result.insertId);
+        // Kirim respon sukses
+        res.json({ success: true, hasil: hasilFinal });
       }
     }
   );
-
-  // ===== RESPONSE =====
-  res.json({ hasil: hasilFinal });
 });
 
-// Jalankan server
 app.listen(PORT, () => {
   console.log(`🚀 Backend running on port ${PORT}`);
 });
