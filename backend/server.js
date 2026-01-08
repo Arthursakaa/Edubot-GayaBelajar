@@ -49,9 +49,12 @@ app.post("/simpan-hasil", async (req, res) => {
   db.query(
     query,
     [nama, visual, auditory, kinesthetic, hasilFinal],
-    err => {
+    (err, result) => {
       if (err) {
-        console.warn("⚠️ DB gagal simpan:", err.message);
+        // Ini akan memunculkan error detail di Railway Logs
+        console.error("❌ ERROR DATABASE SAAT INSERT:", err);
+      } else {
+        console.log("✅ DATA BERHASIL DISIMPAN! ID:", result.insertId);
       }
     }
   );
