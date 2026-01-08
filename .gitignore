@@ -25,16 +25,6 @@ venv/
 .venv/
 env/
 
-# =========================
-# Machine Learning model
-# =========================
-*.pkl
-
-# =========================
-# Dataset (opsional)
-# =========================
-# Uncomment jika tidak ingin upload dataset
-# *.csv
 
 # =========================
 # VS Code

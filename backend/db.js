@@ -1,18 +1,19 @@
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "tes_gaya_belajar"
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
 });
 
 db.connect(err => {
   if (err) {
-    console.log("❌ DB GAGAL TERHUBUNG");
+    console.error("❌ DB GAGAL TERHUBUNG:", err.message);
     return;
   }
-  console.log("✅ DB TERHUBUNG");
+  console.log("✅ DB TERHUBUNG KE RAILWAY");
 });
 
 module.exports = db;
