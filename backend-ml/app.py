@@ -18,11 +18,9 @@ def validasi_hasil_ml(visual, auditory, kinesthetic, hasil_ml):
 
     top, second = sorted_scores[0], sorted_scores[1]
 
-    # Jika dominan jelas → override ML
     if top[1] - second[1] >= 2:
         return top[0]
 
-    # Jika seimbang → gunakan ML
     return hasil_ml.replace("_", "-")
 
 @app.route("/predict", methods=["POST"])

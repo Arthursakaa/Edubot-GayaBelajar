@@ -18,7 +18,6 @@ let namaPeserta = "";
 const userAnswers = new Array(questions.length).fill(null);
 const scores = { visual:0, auditory:0, kinesthetic:0 };
 
-/* ===== ELEMENT ===== */
 const startScreen = document.getElementById("start-screen");
 const quizScreen = document.getElementById("quiz-screen");
 const startBtn = document.getElementById("start-btn");
@@ -33,7 +32,6 @@ const progressFill = document.getElementById("progress-fill");
 const progressPercent = document.getElementById("progress-percent");
 const currentQuestionSpan = document.getElementById("current-question");
 
-/* ===== FUNCTION ===== */
 function showQuestion(index){
     const q = questions[index];
     questionText.textContent = q.text;
@@ -78,7 +76,6 @@ function calculateLearningStyle(){
     return result.join("-");
 }
 
-/* ===== EVENT ===== */
 startBtn.onclick = () => {
     if(!namaInput.value.trim()){
         alert("Nama tidak boleh kosong!");
@@ -120,14 +117,13 @@ nextBtn.onclick = () => {
         currentQuestion++;
         showQuestion(currentQuestion);
     } else {
-        // PROSES KIRIM DATA
+
         nextBtn.disabled = true;
         nextBtn.textContent = "Sedang Memproses...";
 
         calculateScores();
         const hasilLokal = calculateLearningStyle();
 
-        // Pastikan URL ini adalah URL Backend Node.js Anda
         const API_URL = "https://edubot-gayabelajar-production.up.railway.app/simpan-hasil";
 
         fetch(API_URL, {
@@ -147,13 +143,11 @@ nextBtn.onclick = () => {
         })
         .then(data => {
             console.log("✅ Berhasil simpan:", data);
-            // Gunakan hasil dari ML (data.hasil) jika tersedia, jika tidak pakai hasil lokal
             const finalStyle = data.hasil || hasilLokal;
             window.location.href = `result.html?style=${finalStyle}`;
         })
         .catch(err => {
             console.error("❌ Gagal kirim ke database:", err);
-            // Fallback: tetap arahkan ke halaman hasil meskipun gagal simpan ke DB
             window.location.href = `result.html?style=${hasilLokal}`;
         });
     }

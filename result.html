@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
 
-    <!-- Navbar sama dengan index -->
     <script src="components/navbar.js"></script>
 </head>
 
@@ -20,12 +19,10 @@
 <div class="flex justify-center py-10 px-4">
 <div class="bg-white p-8 rounded-2xl shadow-lg max-w-xl w-full text-center">
 
-    <!-- Judul -->
     <h1 class="text-2xl md:text-3xl font-bold text-blue-600 mb-3">
         🎉 Hasil Tes Gaya Belajar 🎉
     </h1>
 
-    <!-- Sapaan -->
     <p class="text-gray-700 text-lg mb-1">
         Halo, <span id="nama-user" class="font-bold text-blue-600"></span> 👋
     </p>
@@ -34,19 +31,16 @@
         Berikut adalah hasil tes gaya belajar kamu:
     </p>
 
-    <!-- Icon -->
     <div class="mb-4">
         <i id="result-icon" class="w-14 h-14 mx-auto text-blue-500"></i>
     </div>
 
-    <!-- Hasil -->
     <h2 id="result-title" class="text-xl font-bold mb-3"></h2>
 
     <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
         <p id="result-desc" class="text-gray-700 leading-relaxed"></p>
     </div>
 
-    <!-- Rekomendasi -->
     <div class="bg-yellow-50 border border-yellow-200 p-5 rounded-xl text-left mb-6">
         <h3 class="font-semibold text-gray-800 mb-3">
             📚 Tips Belajar yang Cocok Buat Kamu:
@@ -54,13 +48,11 @@
         <ul id="result-tips" class="list-disc list-inside text-gray-700 space-y-1"></ul>
     </div>
 
-    <!-- Motivasi -->
     <p class="text-gray-700 mb-8">
         ✨ Ingat ya, setiap anak itu pintar dengan caranya masing-masing.  
         Terus semangat belajar dan jangan takut mencoba hal baru! ✨
     </p>
 
-    <!-- Tombol -->
     <div class="flex flex-col sm:flex-row justify-center gap-4">
         <a href="quiz.html"
            class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold transition">
@@ -78,7 +70,6 @@
 <script>
 feather.replace();
 
-/* ===== DATA HASIL ===== */
 const hasilData = {
     "visual": {
         title: "Gaya Belajar Visual 👀",
@@ -152,7 +143,6 @@ const hasilData = {
     }
 };
 
-/* ===== AMBIL DATA ===== */
 const params = new URLSearchParams(window.location.search);
 const style = params.get("style");
 

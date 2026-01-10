@@ -5,7 +5,6 @@ const db = require("./db");
 
 const app = express();
 
-// Middleware Logging
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
@@ -17,7 +16,6 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const ML_URL = process.env.ML_URL;
 
-// Rute Akar (Cek status server)
 app.get("/", (req, res) => {
   res.send("🚀 Backend Edubot is running and ready!");
 });
@@ -28,7 +26,6 @@ app.post("/simpan-hasil", async (req, res) => {
   const { nama, visual, auditory, kinesthetic, hasil } = req.body;
   let hasilFinal = hasil;
 
-  // ===== Proses ML (Optional) =====
   if (ML_URL) {
     try {
       console.log("🤖 Menghubungi ML Server...");
@@ -45,7 +42,6 @@ app.post("/simpan-hasil", async (req, res) => {
     }
   }
 
-  // ===== Simpan ke Database =====
   const query = `
     INSERT INTO hasil_tes (nama, visual, auditory, kinesthetic, hasil) 
     VALUES (?, ?, ?, ?, ?)

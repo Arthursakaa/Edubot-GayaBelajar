@@ -11,10 +11,8 @@ const connectionConfig = process.env.MYSQL_URL || {
   queueLimit: 0
 };
 
-// Menggunakan Pool agar lebih stabil di Railway
 const db = mysql.createPool(connectionConfig);
 
-// Verifikasi koneksi awal
 db.getConnection((err, connection) => {
   if (err) {
     console.error("❌ DB GAGAL TERHUBUNG!");
