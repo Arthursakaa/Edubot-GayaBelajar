@@ -44,11 +44,29 @@ const simpanHasil = async (req, res, next) => {
       });
     }
 
-    const { nama, visual, auditory, kinesthetic, hasil, student_id } = validationResult.data;
+    const { nama, visual, auditory, kinesthetic, hasil, student_id, class_code } = validationResult.data;
+    let targetClassId = validationResult.data.class_id || null;
     let hasilFinal = hasil;
     let source = "rule-based";
 
-    // 2. Hubungi Machine Learning Server jika terkonfigurasi
+    // 2. Jika menyertakan kode kelas, cari class_id yang bersangkutan
+    if (class_code && !targetClassId) {
+      try {
+        const classRows = await new Promise((resolve, reject) => {
+          db.query("SELECT id FROM classes WHERE class_code = ? LIMIT 1", [class_code.trim()], (err, rows) => {
+            if (err) return reject(err);
+            resolve(rows);
+          });
+        });
+        if (classRows && classRows.length > 0) {
+          targetClassId = classRows[0].id;
+        }
+      } catch (classLookupErr) {
+        console.warn("⚠️ Gagal mencari kode kelas:", classLookupErr.message);
+      }
+    }
+
+    // 3. Hubungi Machine Learning Server jika terkonfigurasi
     if (ML_URL) {
       try {
         console.log(`🤖 [ML] Menghubungi ML Server di ${ML_URL}/predict...`);
@@ -69,15 +87,15 @@ const simpanHasil = async (req, res, next) => {
       }
     }
 
-    // 3. Simpan ke database MySQL dengan parameterized query aman
+    // 4. Simpan ke database MySQL dengan parameterized query aman
     const query = `
-      INSERT INTO hasil_tes (student_id, nama, visual, auditory, kinesthetic, hasil, source) 
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO hasil_tes (student_id, class_id, nama, visual, auditory, kinesthetic, hasil, source) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     db.query(
       query,
-      [student_id || null, nama, visual, auditory, kinesthetic, hasilFinal, source],
+      [student_id || null, targetClassId, nama, visual, auditory, kinesthetic, hasilFinal, source],
       (dbErr, result) => {
         if (dbErr) {
           console.error("❌ [DB ERROR]:", dbErr.message);
@@ -87,10 +105,11 @@ const simpanHasil = async (req, res, next) => {
           });
         }
 
-        console.log(`✅ [DB] Data tersimpan dengan ID: ${result.insertId} (Sumber: ${source})`);
+        console.log(`✅ [DB] Data tersimpan dengan ID: ${result.insertId} (Sumber: ${source}, Kelas: ${targetClassId || 'Umum'})`);
         return res.status(201).json({
           success: true,
           id: result.insertId,
+          class_id: targetClassId,
           hasil: hasilFinal,
           source: source
         });
@@ -102,18 +121,40 @@ const simpanHasil = async (req, res, next) => {
 };
 
 /**
- * Mendapatkan riwayat hasil tes terbaru (fondasi awal Teacher Dashboard)
+ * Mendapatkan riwayat hasil tes terbaru
  */
 const getRiwayat = (req, res, next) => {
   const limit = Math.min(Number(req.query.limit) || 10, 50);
-  const query = `
-    SELECT id, student_id, nama, visual, auditory, kinesthetic, hasil, source, created_at 
-    FROM hasil_tes 
-    ORDER BY created_at DESC 
-    LIMIT ?
+  const filterClassId = req.query.class_id ? Number(req.query.class_id) : null;
+
+  let query = `
+    SELECT 
+      h.id, 
+      h.student_id, 
+      h.class_id, 
+      c.class_name, 
+      c.class_code,
+      h.nama, 
+      h.visual, 
+      h.auditory, 
+      h.kinesthetic, 
+      h.hasil, 
+      h.source, 
+      h.created_at 
+    FROM hasil_tes h
+    LEFT JOIN classes c ON h.class_id = c.id
   `;
 
-  db.query(query, [limit], (err, rows) => {
+  const params = [];
+  if (filterClassId) {
+    query += " WHERE h.class_id = ?";
+    params.push(filterClassId);
+  }
+
+  query += " ORDER BY h.created_at DESC LIMIT ?";
+  params.push(limit);
+
+  db.query(query, params, (err, rows) => {
     if (err) {
       return res.status(500).json({
         success: false,
@@ -133,39 +174,58 @@ const getRiwayat = (req, res, next) => {
  * Mendapatkan ringkasan analitik kelas untuk Teacher Dashboard
  */
 const getAnalytics = (req, res, next) => {
+  const filterClassId = req.query.class_id ? Number(req.query.class_id) : null;
+  const whereClause = filterClassId ? " WHERE class_id = ? " : "";
+  const params = filterClassId ? [filterClassId] : [];
+
   const querySummary = `
     SELECT 
       COUNT(*) AS total_tes,
       ROUND(AVG(visual), 1) AS avg_visual,
       ROUND(AVG(auditory), 1) AS avg_auditory,
       ROUND(AVG(kinesthetic), 1) AS avg_kinesthetic
-    FROM hasil_tes;
+    FROM hasil_tes
+    ${whereClause};
   `;
 
   const queryBreakdown = `
     SELECT hasil, COUNT(*) AS jumlah 
     FROM hasil_tes 
+    ${whereClause}
     GROUP BY hasil;
   `;
 
   const queryRecent = `
-    SELECT id, nama, visual, auditory, kinesthetic, hasil, source, created_at 
-    FROM hasil_tes 
-    ORDER BY created_at DESC 
-    LIMIT 20;
+    SELECT 
+      h.id, 
+      h.nama, 
+      h.class_id, 
+      c.class_name, 
+      c.class_code,
+      h.visual, 
+      h.auditory, 
+      h.kinesthetic, 
+      h.hasil, 
+      h.source, 
+      h.created_at 
+    FROM hasil_tes h
+    LEFT JOIN classes c ON h.class_id = c.id
+    ${filterClassId ? " WHERE h.class_id = ? " : ""}
+    ORDER BY h.created_at DESC 
+    LIMIT 30;
   `;
 
-  db.query(querySummary, (err1, summaryRows) => {
+  db.query(querySummary, params, (err1, summaryRows) => {
     if (err1) {
       return res.status(500).json({ success: false, error: "Gagal mengambil ringkasan analitik" });
     }
 
-    db.query(queryBreakdown, (err2, breakdownRows) => {
+    db.query(queryBreakdown, params, (err2, breakdownRows) => {
       if (err2) {
         return res.status(500).json({ success: false, error: "Gagal mengambil distribusi gaya belajar" });
       }
 
-      db.query(queryRecent, (err3, recentRows) => {
+      db.query(queryRecent, params, (err3, recentRows) => {
         if (err3) {
           return res.status(500).json({ success: false, error: "Gagal mengambil data siswa terbaru" });
         }
@@ -178,6 +238,7 @@ const getAnalytics = (req, res, next) => {
 
         res.json({
           success: true,
+          class_id: filterClassId,
           summary: {
             total_siswa: summary.total_tes,
             rata_rata: {
@@ -200,4 +261,3 @@ module.exports = {
   getRiwayat,
   getAnalytics
 };
-

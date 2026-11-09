@@ -69,7 +69,7 @@
             <!-- Input Nama -->
             <div class="space-y-2 text-left">
                 <label for="nama-input" class="block text-xs font-extrabold uppercase text-slate-700 tracking-wider">
-                    Nama Panggilan Kamu:
+                    Nama Panggilan Kamu <span class="text-red-500">*</span>:
                 </label>
                 <input
                     type="text"
@@ -79,6 +79,27 @@
                     maxlength="50"
                     autocomplete="off"
                 >
+            </div>
+
+            <!-- Pilihan Kelas Siswa -->
+            <div class="space-y-2 text-left">
+                <div class="flex items-center justify-between">
+                    <label for="kelas-select" class="block text-xs font-extrabold uppercase text-slate-700 tracking-wider">
+                        Pilih Kelas Belajarmu:
+                    </label>
+                    <span class="text-[11px] font-bold text-blue-600">Opsional</span>
+                </div>
+                <div class="relative">
+                    <select
+                        id="kelas-select"
+                        class="w-full pl-4 pr-10 py-3.5 border-2 border-blue-200 rounded-2xl text-sm md:text-base font-bold text-slate-800 bg-white focus:border-blue-600 transition-all appearance-none outline-none cursor-pointer"
+                    >
+                        <option value="">Umum / Belajar Mandiri (Tanpa Kelas)</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="ph-bold ph-caret-down text-lg"></i>
+                    </div>
+                </div>
             </div>
 
             <button

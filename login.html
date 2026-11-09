@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk Guru – EduBot Gaya Belajar</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#2563EB',
+                            amber: '#F59E0B',
+                            emerald: '#10B981',
+                            purple: '#8B5CF6',
+                            sky: '#EFF6FF',
+                            dark: '#1E293B'
+                        }
+                    },
+                    fontFamily: {
+                        baloo: ['"Baloo 2"', 'cursive', 'sans-serif'],
+                        nunito: ['"Nunito"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Baloo 2 & Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons CDN -->
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/duotone/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+    <!-- EduBot Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#EFF6FF] text-slate-800 font-nunito min-h-screen flex flex-col justify-between selection:bg-blue-200">
+
+    <!-- Navbar Container -->
+    <custom-navbar></custom-navbar>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Sisi Kiri: Branding & Edukasi Guru -->
+            <div class="lg:col-span-5 text-center lg:text-left space-y-6">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 border border-blue-200 text-blue-800 text-xs sm:text-sm font-bold shadow-sm">
+                    <i class="ph-duotone ph-chalkboard-teacher text-lg text-blue-600"></i>
+                    <span>Portal Khusus Guru & Pendidik</span>
+                </div>
+                
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 font-baloo leading-tight">
+                    Kelola Asesmen Siswa Lebih <span class="text-blue-600">Bermakna</span>
+                </h1>
+                
+                <p class="text-slate-600 text-base sm:text-lg leading-relaxed">
+                    Masuk ke akun guru Anda untuk memantau hasil kuesioner VAK siswa, melihat grafik distribusi kelas, dan mendapatkan panduan diferensiasi aktivitas belajar.
+                </p>
+
+                <!-- Ilustrasi unDraw Resmi (MIT) -->
+                <div class="p-6 bg-white/70 rounded-3xl border border-blue-100 shadow-sm">
+                    <img src="images/guru-dashboard.svg" alt="Ilustrasi Guru EduBot" class="w-full max-h-56 object-contain mx-auto">
+                </div>
+
+                <!-- Keunggulan Fitur Guru -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-100 text-center shadow-xs">
+                        <i class="ph-duotone ph-chart-pie-slice text-2xl text-blue-600 mb-1 inline-block"></i>
+                        <p class="text-xs font-bold text-slate-800">Analitik Kelas</p>
+                        <p class="text-[11px] text-slate-500">Distribusi VAK</p>
+                    </div>
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-100 text-center shadow-xs">
+                        <i class="ph-duotone ph-table text-2xl text-amber-500 mb-1 inline-block"></i>
+                        <p class="text-xs font-bold text-slate-800">Riwayat Nilai</p>
+                        <p class="text-[11px] text-slate-500">Pencarian & filter</p>
+                    </div>
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-100 text-center shadow-xs">
+                        <i class="ph-duotone ph-file-csv text-2xl text-emerald-600 mb-1 inline-block"></i>
+                        <p class="text-xs font-bold text-slate-800">Ekspor Data</p>
+                        <p class="text-[11px] text-slate-500">Format CSV siap pakai</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sisi Kanan: Kartu Form Auth Claymorphism -->
+            <div class="lg:col-span-7">
+                <div class="clay-card rounded-3xl p-6 sm:p-10 border border-white shadow-clay">
+                    
+                    <!-- Alert Pengalihan / Pesan Umum -->
+                    <div id="notice-box" class="hidden mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-sm flex items-start gap-3">
+                        <i class="ph-fill ph-warning-circle text-xl text-amber-600 mt-0.5 shrink-0"></i>
+                        <span id="notice-text">Halaman Dashboard Guru memerlukan login. Silakan masuk terlebih dahulu.</span>
+                    </div>
+
+                    <!-- Alert Error Banner -->
+                    <div id="alert-error" class="hidden mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-sm flex items-start gap-3" role="alert" tabindex="-1">
+                        <i class="ph-fill ph-warning-circle text-xl text-red-600 mt-0.5 shrink-0"></i>
+                        <div class="flex-grow">
+                            <strong id="alert-title" class="font-bold block">Terjadi kesalahan</strong>
+                            <p id="alert-message" class="text-xs sm:text-sm mt-0.5"></p>
+                        </div>
+                    </div>
+
+                    <!-- Alert Success Banner -->
+                    <div id="alert-success" class="hidden mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-start gap-3" role="status">
+                        <i class="ph-fill ph-check-circle text-xl text-emerald-600 mt-0.5 shrink-0"></i>
+                        <div class="flex-grow">
+                            <strong id="success-title" class="font-bold block">Berhasil!</strong>
+                            <p id="success-message" class="text-xs sm:text-sm mt-0.5"></p>
+                        </div>
+                    </div>
+
+                    <!-- Tab Switcher (Masuk vs Daftar) -->
+                    <div class="flex items-center bg-slate-100 p-1.5 rounded-2xl mb-6">
+                        <button id="tab-login-btn" type="button" class="flex-1 py-3 px-4 rounded-xl font-baloo font-bold text-sm sm:text-base transition-all duration-200 bg-white text-blue-600 shadow-sm flex items-center justify-center gap-2">
+                            <i class="ph-bold ph-sign-in text-lg"></i>
+                            <span>Masuk Guru</span>
+                        </button>
+                        <button id="tab-register-btn" type="button" class="flex-1 py-3 px-4 rounded-xl font-baloo font-bold text-sm sm:text-base transition-all duration-200 text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2">
+                            <i class="ph-bold ph-user-plus text-lg"></i>
+                            <span>Daftar Akun</span>
+                        </button>
+                    </div>
+
+                    <!-- Pill Coba Akun Demo -->
+                    <div class="mb-6 p-3.5 bg-blue-50/80 rounded-2xl border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center gap-2 text-blue-900 text-center sm:text-left">
+                            <i class="ph-duotone ph-sparkle text-lg text-amber-500 shrink-0"></i>
+                            <span>Akun Demo Guru: <strong>guru</strong> / <strong>guru123</strong></span>
+                        </div>
+                        <button id="btn-quick-demo" type="button" class="shrink-0 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-colors shadow-xs flex items-center gap-1.5">
+                            <i class="ph-bold ph-lightning"></i>
+                            <span>Gunakan Akun Demo</span>
+                        </button>
+                    </div>
+
+                    <!-- ============================================== -->
+                    <!-- FORM 1: MASUK (LOGIN)                          -->
+                    <!-- ============================================== -->
+                    <form id="form-login" class="space-y-5" novalidate>
+                        <div>
+                            <label for="login-username" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                                Username Guru <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i class="ph-duotone ph-user text-xl"></i>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="login-username" 
+                                    name="username" 
+                                    autocomplete="username" 
+                                    required 
+                                    placeholder="Masukkan username Anda"
+                                    class="w-full pl-11 pr-4 py-3 rounded-2xl bg-white border border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 text-slate-900 font-medium text-sm transition-all outline-none"
+                                    aria-describedby="login-username-error"
+                                >
+                            </div>
+                            <p id="login-username-error" class="hidden text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                                <i class="ph-fill ph-warning-circle"></i> <span>Username wajib diisi</span>
+                            </p>
+                        </div>
+
+                        <div>
+                            <label for="login-password" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                                Kata Sandi <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i class="ph-duotone ph-lock-key text-xl"></i>
+                                </div>
+                                <input 
+                                    type="password" 
+                                    id="login-password" 
+                                    name="password" 
+                                    autocomplete="current-password" 
+                                    required 
+                                    placeholder="Masukkan kata sandi"
+                                    class="w-full pl-11 pr-12 py-3 rounded-2xl bg-white border border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 text-slate-900 font-medium text-sm transition-all outline-none"
+                                    aria-describedby="login-password-error"
+                                >
+                                <button 
+                                    type="button" 
+                                    id="toggle-login-password" 
+                                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                                    aria-label="Tampilkan atau sembunyikan kata sandi"
+                                >
+                                    <i class="ph-bold ph-eye text-lg"></i>
+                                </button>
+                            </div>
+                            <p id="login-password-error" class="hidden text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                                <i class="ph-fill ph-warning-circle"></i> <span>Kata sandi wajib diisi</span>
+                            </p>
+                        </div>
+
+                        <button 
+                            type="submit" 
+                            id="btn-submit-login" 
+                            class="btn-clay w-full py-3.5 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-baloo font-bold text-base sm:text-lg flex items-center justify-center gap-2 shadow-clay-button transition-all duration-200 mt-2"
+                        >
+                            <i class="ph-bold ph-sign-in text-xl"></i>
+                            <span id="btn-login-text">Masuk ke Dashboard Guru</span>
+                            <span id="btn-login-spinner" class="hidden animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></span>
+                        </button>
+                    </form>
+
+                    <!-- ============================================== -->
+                    <!-- FORM 2: DAFTAR (REGISTER)                      -->
+                    <!-- ============================================== -->
+                    <form id="form-register" class="space-y-4 hidden" novalidate>
+                        <div>
+                            <label for="reg-fullname" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                                Nama Lengkap & Gelar <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i class="ph-duotone ph-identification-badge text-xl"></i>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="reg-fullname" 
+                                    name="full_name" 
+                                    autocomplete="name" 
+                                    required 
+                                    placeholder="Contoh: Siti Rahmawati, S.Pd."
+                                    class="w-full pl-11 pr-4 py-3 rounded-2xl bg-white border border-slate-300 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100 text-slate-900 font-medium text-sm transition-all outline-none"
+                                    aria-describedby="reg-fullname-error"
+                                >
+                            </div>
+                            <p id="reg-fullname-error" class="hidden text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                                <i class="ph-fill ph-warning-circle"></i> <span>Nama lengkap minimal 2 karakter</span>
+                            </p>
+                        </div>
+
+                        <div>
+                            <label for="reg-username" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                                Username <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i class="ph-duotone ph-user text-xl"></i>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="reg-username" 
+                                    name="username" 
+                                    autocomplete="username" 
+                                    required 
+                                    placeholder="Contoh: bu_siti4a"
+                                    class="w-full pl-11 pr-4 py-3 rounded-2xl bg-white border border-slate-300 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100 text-slate-900 font-medium text-sm transition-all outline-none"
+                                    aria-describedby="reg-username-error"
+                                >
+                            </div>
+                            <p id="reg-username-error" class="hidden text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                                <i class="ph-fill ph-warning-circle"></i> <span>Username minimal 3 karakter (huruf, angka, _)</span>
+                            </p>
+                            <p class="text-[11px] text-slate-400 mt-1">Hanya huruf kecil, angka, dan underscore (_).</p>
+                        </div>
+
+                        <div>
+                            <label for="reg-password" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                                Kata Sandi <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i class="ph-duotone ph-lock-key text-xl"></i>
+                                </div>
+                                <input 
+                                    type="password" 
+                                    id="reg-password" 
+                                    name="password" 
+                                    autocomplete="new-password" 
+                                    required 
+                                    placeholder="Minimal 6 karakter"
+                                    class="w-full pl-11 pr-12 py-3 rounded-2xl bg-white border border-slate-300 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100 text-slate-900 font-medium text-sm transition-all outline-none"
+                                    aria-describedby="reg-password-error"
+                                >
+                                <button 
+                                    type="button" 
+                                    id="toggle-reg-password" 
+                                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                                    aria-label="Tampilkan atau sembunyikan kata sandi"
+                                >
+                                    <i class="ph-bold ph-eye text-lg"></i>
+                                </button>
+                            </div>
+                            <p id="reg-password-error" class="hidden text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                                <i class="ph-fill ph-warning-circle"></i> <span>Kata sandi minimal 6 karakter</span>
+                            </p>
+                        </div>
+
+                        <div>
+                            <label for="reg-password-confirm" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                                Konfirmasi Kata Sandi <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                                    <i class="ph-duotone ph-shield-check text-xl"></i>
+                                </div>
+                                <input 
+                                    type="password" 
+                                    id="reg-password-confirm" 
+                                    name="password_confirm" 
+                                    autocomplete="new-password" 
+                                    required 
+                                    placeholder="Ketik ulang kata sandi"
+                                    class="w-full pl-11 pr-4 py-3 rounded-2xl bg-white border border-slate-300 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100 text-slate-900 font-medium text-sm transition-all outline-none"
+                                    aria-describedby="reg-password-confirm-error"
+                                >
+                            </div>
+                            <p id="reg-password-confirm-error" class="hidden text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                                <i class="ph-fill ph-warning-circle"></i> <span>Konfirmasi kata sandi tidak cocok</span>
+                            </p>
+                        </div>
+
+                        <button 
+                            type="submit" 
+                            id="btn-submit-register" 
+                            class="btn-clay w-full py-3.5 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-baloo font-bold text-base sm:text-lg flex items-center justify-center gap-2 shadow-clay-button transition-all duration-200 mt-2"
+                        >
+                            <i class="ph-bold ph-user-plus text-xl"></i>
+                            <span id="btn-reg-text">Daftarkan Akun Guru Baru</span>
+                            <span id="btn-reg-spinner" class="hidden animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></span>
+                        </button>
+                    </form>
+
+                    <!-- Navigasi Kembali ke Beranda -->
+                    <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+                        <a href="index.html" class="inline-flex items-center gap-2 text-slate-500 hover:text-blue-600 font-bold text-xs sm:text-sm transition-colors">
+                            <i class="ph-bold ph-arrow-left"></i>
+                            <span>Kembali ke Halaman Siswa</span>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-6 border-t border-blue-100 bg-white/60 text-center text-xs text-slate-500 font-medium">
+        <p>&copy; 2026 EduBot – Platform Pendukung Asesmen Gaya Belajar Siswa SD. Hak Cipta Dilindungi.</p>
+    </footer>
+
+    <!-- Script Navbar -->
+    <script src="components/navbar.js"></script>
+
+    <!-- Script Autentikasi Frontend -->
+    <script>
+        const API_URL = "http://localhost:3000";
+
+        // DOM Elements
+        const tabLoginBtn = document.getElementById("tab-login-btn");
+        const tabRegisterBtn = document.getElementById("tab-register-btn");
+        const formLogin = document.getElementById("form-login");
+        const formRegister = document.getElementById("form-register");
+        const btnQuickDemo = document.getElementById("btn-quick-demo");
+
+        const alertError = document.getElementById("alert-error");
+        const alertTitle = document.getElementById("alert-title");
+        const alertMessage = document.getElementById("alert-message");
+
+        const alertSuccess = document.getElementById("alert-success");
+        const successTitle = document.getElementById("success-title");
+        const successMessage = document.getElementById("success-message");
+
+        const noticeBox = document.getElementById("notice-box");
+        const noticeText = document.getElementById("notice-text");
+
+        // Periksa parameter redirect dari URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("reason") === "unauthorized") {
+            noticeBox.classList.remove("hidden");
+            noticeText.textContent = "Halaman Dashboard Guru memerlukan login. Silakan masuk dengan akun guru Anda.";
+        }
+
+        // Cek jika sudah memiliki token aktif
+        const existingToken = localStorage.getItem("edubot_token");
+        if (existingToken) {
+            fetch(`${API_URL}/api/auth/me`, {
+                headers: { "Authorization": `Bearer ${existingToken}` }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.user) {
+                    // Guru sudah login, arahkan langsung ke Dashboard Guru
+                    window.location.href = "teacher.html";
+                }
+            })
+            .catch(() => {
+                // Token tidak valid/kadaluarsa, bersihkan
+                localStorage.removeItem("edubot_token");
+                localStorage.removeItem("edubot_user");
+            });
+        }
+
+        // Tab Switching
+        tabLoginBtn.addEventListener("click", () => {
+            tabLoginBtn.className = "flex-1 py-3 px-4 rounded-xl font-baloo font-bold text-sm sm:text-base transition-all duration-200 bg-white text-blue-600 shadow-sm flex items-center justify-center gap-2";
+            tabRegisterBtn.className = "flex-1 py-3 px-4 rounded-xl font-baloo font-bold text-sm sm:text-base transition-all duration-200 text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2";
+            formLogin.classList.remove("hidden");
+            formRegister.classList.add("hidden");
+            hideAlerts();
+        });
+
+        tabRegisterBtn.addEventListener("click", () => {
+            tabRegisterBtn.className = "flex-1 py-3 px-4 rounded-xl font-baloo font-bold text-sm sm:text-base transition-all duration-200 bg-white text-emerald-600 shadow-sm flex items-center justify-center gap-2";
+            tabLoginBtn.className = "flex-1 py-3 px-4 rounded-xl font-baloo font-bold text-sm sm:text-base transition-all duration-200 text-slate-600 hover:text-slate-900 flex items-center justify-center gap-2";
+            formRegister.classList.remove("hidden");
+            formLogin.classList.add("hidden");
+            hideAlerts();
+        });
+
+        // Quick Demo Fill
+        btnQuickDemo.addEventListener("click", () => {
+            if (formLogin.classList.contains("hidden")) {
+                tabLoginBtn.click();
+            }
+            document.getElementById("login-username").value = "guru";
+            document.getElementById("login-password").value = "guru123";
+            hideAlerts();
+        });
+
+        // Password Visibility Toggles
+        const toggleLoginPass = document.getElementById("toggle-login-password");
+        const loginPassInput = document.getElementById("login-password");
+        toggleLoginPass.addEventListener("click", () => {
+            const isPassword = loginPassInput.type === "password";
+            loginPassInput.type = isPassword ? "text" : "password";
+            toggleLoginPass.innerHTML = isPassword 
+                ? '<i class="ph-bold ph-eye-slash text-lg text-blue-600"></i>' 
+                : '<i class="ph-bold ph-eye text-lg"></i>';
+        });
+
+        const toggleRegPass = document.getElementById("toggle-reg-password");
+        const regPassInput = document.getElementById("reg-password");
+        toggleRegPass.addEventListener("click", () => {
+            const isPassword = regPassInput.type === "password";
+            regPassInput.type = isPassword ? "text" : "password";
+            toggleRegPass.innerHTML = isPassword 
+                ? '<i class="ph-bold ph-eye-slash text-lg text-emerald-600"></i>' 
+                : '<i class="ph-bold ph-eye text-lg"></i>';
+        });
+
+        function hideAlerts() {
+            alertError.classList.add("hidden");
+            alertSuccess.classList.add("hidden");
+        }
+
+        function showError(title, message) {
+            hideAlerts();
+            alertTitle.textContent = title;
+            alertMessage.textContent = message;
+            alertError.classList.remove("hidden");
+            alertError.focus();
+        }
+
+        function showSuccess(title, message) {
+            hideAlerts();
+            successTitle.textContent = title;
+            successMessage.textContent = message;
+            alertSuccess.classList.remove("hidden");
+        }
+
+        // ==========================================
+        // SUBMIT LOGIN
+        // ==========================================
+        formLogin.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideAlerts();
+
+            const username = document.getElementById("login-username").value.trim();
+            const password = document.getElementById("login-password").value;
+
+            // Client Validation
+            let hasError = false;
+            const userError = document.getElementById("login-username-error");
+            const passError = document.getElementById("login-password-error");
+
+            if (!username) {
+                userError.classList.remove("hidden");
+                hasError = true;
+            } else {
+                userError.classList.add("hidden");
+            }
+
+            if (!password) {
+                passError.classList.remove("hidden");
+                hasError = true;
+            } else {
+                passError.classList.add("hidden");
+            }
+
+            if (hasError) return;
+
+            // Loading state
+            const submitBtn = document.getElementById("btn-submit-login");
+            const btnText = document.getElementById("btn-login-text");
+            const btnSpinner = document.getElementById("btn-login-spinner");
+            submitBtn.disabled = true;
+            btnText.textContent = "Memverifikasi...";
+            btnSpinner.classList.remove("hidden");
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    showError("Gagal Masuk", data.error || "Username atau kata sandi tidak sesuai.");
+                    return;
+                }
+
+                // Berhasil login!
+                localStorage.setItem("edubot_token", data.token);
+                localStorage.setItem("edubot_user", JSON.stringify(data.user));
+
+                showSuccess("Berhasil Masuk!", `Selamat datang, ${data.user.full_name}. Mengarahkan ke Dashboard Guru...`);
+
+                setTimeout(() => {
+                    window.location.href = "teacher.html";
+                }, 900);
+
+            } catch (err) {
+                showError("Koneksi Bermasalah", "Tidak dapat terhubung ke server backend. Pastikan server aktif.");
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = "Masuk ke Dashboard Guru";
+                btnSpinner.classList.add("hidden");
+            }
+        });
+
+        // ==========================================
+        // SUBMIT REGISTER
+        // ==========================================
+        formRegister.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            hideAlerts();
+
+            const fullName = document.getElementById("reg-fullname").value.trim();
+            const username = document.getElementById("reg-username").value.trim();
+            const password = document.getElementById("reg-password").value;
+            const passwordConfirm = document.getElementById("reg-password-confirm").value;
+
+            let hasError = false;
+            const nameError = document.getElementById("reg-fullname-error");
+            const userError = document.getElementById("reg-username-error");
+            const passError = document.getElementById("reg-password-error");
+            const confError = document.getElementById("reg-password-confirm-error");
+
+            if (fullName.length < 2) {
+                nameError.classList.remove("hidden");
+                hasError = true;
+            } else {
+                nameError.classList.add("hidden");
+            }
+
+            if (!/^[a-zA-Z0-9_]{3,50}$/.test(username)) {
+                userError.classList.remove("hidden");
+                hasError = true;
+            } else {
+                userError.classList.add("hidden");
+            }
+
+            if (password.length < 6) {
+                passError.classList.remove("hidden");
+                hasError = true;
+            } else {
+                passError.classList.add("hidden");
+            }
+
+            if (password !== passwordConfirm) {
+                confError.classList.remove("hidden");
+                hasError = true;
+            } else {
+                confError.classList.add("hidden");
+            }
+
+            if (hasError) return;
+
+            // Loading state
+            const submitBtn = document.getElementById("btn-submit-register");
+            const btnText = document.getElementById("btn-reg-text");
+            const btnSpinner = document.getElementById("btn-reg-spinner");
+            submitBtn.disabled = true;
+            btnText.textContent = "Mendaftarkan Akun...";
+            btnSpinner.classList.remove("hidden");
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/register`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        full_name: fullName,
+                        username: username,
+                        password: password,
+                        role: "teacher"
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    showError("Pendaftaran Gagal", data.error || (data.details && data.details.join(", ")) || "Gagal membuat akun.");
+                    return;
+                }
+
+                // Berhasil register & auto-login!
+                localStorage.setItem("edubot_token", data.token);
+                localStorage.setItem("edubot_user", JSON.stringify(data.user));
+
+                showSuccess("Akun Berhasil Didaftarkan!", `Selamat datang, ${data.user.full_name}. Membuka Dashboard Guru...`);
+
+                setTimeout(() => {
+                    window.location.href = "teacher.html";
+                }, 1000);
+
+            } catch (err) {
+                showError("Koneksi Bermasalah", "Tidak dapat terhubung ke server backend. Pastikan server aktif.");
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = "Daftarkan Akun Guru Baru";
+                btnSpinner.classList.add("hidden");
+            }
+        });
+    </script>
+</body>
+</html>
+

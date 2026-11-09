@@ -76,6 +76,42 @@ PREPARE alterIfNotExists FROM @preparedStatement;
 EXECUTE alterIfNotExists;
 DEALLOCATE PREPARE alterIfNotExists;
 
+-- Tambah class_code pada tabel classes jika belum ada
+SET @tablename = "classes";
+SET @columnname = "class_code";
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (table_name = @tablename)
+      AND (table_schema = @dbname)
+      AND (column_name = @columnname)
+  ) > 0,
+  "SELECT 1",
+  "ALTER TABLE classes ADD COLUMN class_code VARCHAR(20) NULL UNIQUE AFTER class_name;"
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
+-- Tambah class_id pada tabel hasil_tes jika belum ada
+SET @tablename = "hasil_tes";
+SET @columnname = "class_id";
+SET @preparedStatement = (SELECT IF(
+  (
+    SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE
+      (table_name = @tablename)
+      AND (table_schema = @dbname)
+      AND (column_name = @columnname)
+  ) > 0,
+  "SELECT 1",
+  "ALTER TABLE hasil_tes ADD COLUMN class_id INT NULL AFTER student_id, ADD CONSTRAINT fk_hasil_class FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE SET NULL;"
+));
+PREPARE alterIfNotExists FROM @preparedStatement;
+EXECUTE alterIfNotExists;
+DEALLOCATE PREPARE alterIfNotExists;
+
 -- Indeks untuk efisiensi query analitik dan dashboard
 CREATE INDEX idx_hasil_created ON hasil_tes(created_at);
 

@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const apiRoutes = require("./routes/api");
+const authRoutes = require("./routes/authRoutes");
+const classRoutes = require("./routes/classRoutes");
 const { notFoundHandler, globalErrorHandler } = require("./middlewares/errorHandler");
 
 const app = express();
@@ -40,6 +42,12 @@ app.get("/", (req, res) => {
 });
 
 // 6. Registrasi API Routes
+// Endpoint autentikasi guru & manajemen kelas
+app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/classes", classRoutes);
+app.use("/api/classes", classRoutes);
+
 // Dukungan backward compatibility untuk route root (/simpan-hasil dan /health)
 app.use("/", apiRoutes);
 // Route berstandar /api/

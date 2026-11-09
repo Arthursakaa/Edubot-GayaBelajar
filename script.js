@@ -16,6 +16,7 @@ const questions = [
 let currentQuestion = 0;
 let namaPeserta = "";
 let selectedAvatar = "ph-robot";
+let selectedClassId = null;
 const userAnswers = new Array(questions.length).fill(null);
 const scores = { visual: 0, auditory: 0, kinesthetic: 0 };
 
@@ -24,9 +25,33 @@ const startScreen = document.getElementById("start-screen");
 const quizScreen = document.getElementById("quiz-screen");
 const startBtn = document.getElementById("start-btn");
 const namaInput = document.getElementById("nama-input");
+const kelasSelect = document.getElementById("kelas-select");
 const namaUser = document.getElementById("nama-user");
 const userAvatarBadge = document.getElementById("user-avatar-badge");
 const avatarButtons = document.querySelectorAll(".avatar-btn");
+
+// Muat daftar kelas publik untuk dipilih siswa
+function loadPublicClasses() {
+    if (!kelasSelect) return;
+    const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
+        ? "http://localhost:3000/api"
+        : "https://edubot-gayabelajar-production.up.railway.app/api";
+
+    fetch(`${API_BASE}/classes/public`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.data && data.data.length > 0) {
+                data.data.forEach(cls => {
+                    const opt = document.createElement("option");
+                    opt.value = cls.id;
+                    opt.textContent = `${cls.class_name} (${cls.class_code || cls.grade_level})${cls.teacher_name ? ' - ' + cls.teacher_name : ''}`;
+                    kelasSelect.appendChild(opt);
+                });
+            }
+        })
+        .catch(err => console.warn("Tidak dapat memuat kelas:", err.message));
+}
+loadPublicClasses();
 
 const questionText = document.getElementById("question-text");
 const answerButtons = document.querySelectorAll(".answer-btn");
@@ -155,8 +180,11 @@ startBtn.onclick = () => {
     }
 
     namaPeserta = inputVal;
+    selectedClassId = (kelasSelect && kelasSelect.value) ? Number(kelasSelect.value) : null;
+
     localStorage.setItem("nama_peserta", namaPeserta);
     localStorage.setItem("user_avatar_icon", selectedAvatar);
+    localStorage.setItem("edubot_class_id", selectedClassId ? String(selectedClassId) : "");
 
     namaUser.textContent = namaPeserta;
     if (userAvatarBadge) {
@@ -219,7 +247,8 @@ nextBtn.onclick = () => {
                 visual: scores.visual,
                 auditory: scores.auditory,
                 kinesthetic: scores.kinesthetic,
-                hasil: hasilLokal
+                hasil: hasilLokal,
+                class_id: selectedClassId || null
             })
         })
         .then(res => {

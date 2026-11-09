@@ -45,7 +45,9 @@ const simpanHasilSchema = z.object({
     .trim()
     .min(1, "Hasil lokal tidak boleh kosong"),
 
-  student_id: z.number().int().positive().nullable().optional()
+  student_id: z.number().int().positive().nullable().optional(),
+  class_id: z.number().int().positive().nullable().optional(),
+  class_code: z.string().trim().max(30).nullable().optional()
 });
 
 module.exports = { simpanHasilSchema };

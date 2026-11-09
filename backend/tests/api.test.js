@@ -41,13 +41,28 @@ function runApiTests() {
       console.assert(invalidRes.body.success === false, "Response harus success: false");
       console.log("  ✅ Test 3: POST /api/simpan-hasil (Zod Rejection) -> Status 400 Bad Request");
 
-      // Test 4: GET /api/riwayat
-      const riwayatRes = await makeRequest(port, "/api/riwayat?limit=5", "GET");
-      console.assert(riwayatRes.statusCode === 200, "Riwayat harus 200");
-      console.assert(Array.isArray(riwayatRes.body.data), "Data harus berupa array");
-      console.log(`  ✅ Test 4: GET /api/riwayat -> Status 200 OK (${riwayatRes.body.data.length} records)`);
+      // Test 4: Proteksi GET /api/riwayat tanpa token (Harus 401 Unauthorized)
+      const unauthRiwayat = await makeRequest(port, "/api/riwayat", "GET");
+      console.assert(unauthRiwayat.statusCode === 401, "Akses tanpa token harus ditolak 401");
+      console.log("  ✅ Test 4: GET /api/riwayat (Tanpa Token) -> Ditolak 401 Unauthorized (Terkunci Aman)");
 
-      console.log("\n🎉 SELURUH PENGUJIAN API BACKEND BERHASIL 100%!");
+      // Test 5: Login untuk mendapatkan token guru
+      const loginRes = await makeRequest(port, "/api/auth/login", "POST", {
+        username: "guru",
+        password: "guru123"
+      });
+      console.assert(loginRes.statusCode === 200, "Login demo guru harus 200");
+      const token = loginRes.body.token;
+      console.assert(!!token, "Token harus ada");
+      console.log("  ✅ Test 5: POST /api/auth/login -> Berhasil mendapatkan JWT token");
+
+      // Test 6: GET /api/riwayat dengan Bearer token
+      const riwayatRes = await makeRequest(port, "/api/riwayat?limit=5", "GET", null, token);
+      console.assert(riwayatRes.statusCode === 200, "Riwayat dengan token harus 200");
+      console.assert(Array.isArray(riwayatRes.body.data), "Data harus berupa array");
+      console.log(`  ✅ Test 6: GET /api/riwayat (Dengan Token) -> Status 200 OK (${riwayatRes.body.data.length} records)`);
+
+      console.log("\n🎉 SELURUH PENGUJIAN API & KEAMANAN BACKEND BERHASIL 100%!");
     } catch (err) {
       console.error("❌ PENGUJIAN GAGAL:", err);
       process.exitCode = 1;
@@ -57,21 +72,26 @@ function runApiTests() {
   });
 }
 
-function makeRequest(port, path, method, data = null) {
+function makeRequest(port, path, method, data = null, token = null) {
   return new Promise((resolve, reject) => {
     const postData = data ? JSON.stringify(data) : null;
+    const headers = {
+      "Content-Type": "application/json"
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    if (postData) {
+      headers["Content-Length"] = Buffer.byteLength(postData);
+    }
+
     const options = {
       hostname: "127.0.0.1",
       port: port,
       path: path,
       method: method,
-      headers: {
-        "Content-Type": "application/json"
-      }
+      headers: headers
     };
-    if (postData) {
-      options.headers["Content-Length"] = Buffer.byteLength(postData);
-    }
 
     const req = http.request(options, (res) => {
       let bodyStr = "";
@@ -92,4 +112,3 @@ function makeRequest(port, path, method, data = null) {
 }
 
 runApiTests();
-

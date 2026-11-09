@@ -1,5 +1,30 @@
 {
-  "dependencies": {
-    "cors": "^2.8.5"
-  }
+  "name": "edubot-gayabelajar",
+  "version": "1.2.0",
+  "description": "EduBot - Platform Asesmen Preferensi Gaya Belajar Siswa SD Berbasis Pendekatan VAK dan Machine Learning",
+  "private": true,
+  "scripts": {
+    "start": "start-all.bat",
+    "backend": "npm start --prefix backend",
+    "test:all": "node --env-file=backend/.env backend/tests/api.test.js && node --env-file=backend/.env backend/tests/auth.test.js && node --env-file=backend/.env backend/tests/classes.test.js",
+    "test:api": "node --env-file=backend/.env backend/tests/api.test.js",
+    "test:auth": "node --env-file=backend/.env backend/tests/auth.test.js",
+    "test:classes": "node --env-file=backend/.env backend/tests/classes.test.js",
+    "test:ml": ".\\backend-ml\\venv\\Scripts\\python.exe -m unittest backend-ml/tests/test_ml.py",
+    "evaluate:ml": ".\\backend-ml\\venv\\Scripts\\python.exe backend-ml/evaluate.py"
+  },
+  "keywords": [
+    "edubot",
+    "learning-style",
+    "vak",
+    "education",
+    "machine-learning",
+    "express",
+    "flask",
+    "scikit-learn",
+    "mysql",
+    "tailwind"
+  ],
+  "author": "Arthur Saka",
+  "license": "MIT"
 }

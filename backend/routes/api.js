@@ -6,8 +6,15 @@ const {
   getRiwayat,
   getAnalytics
 } = require("../controllers/hasilController");
+const { requireAuth } = require("../middlewares/authMiddleware");
+const authRoutes = require("./authRoutes");
+const classRoutes = require("./classRoutes");
 
 const router = express.Router();
+
+// Sub-route autentikasi (/api/auth/*) & kelas (/api/classes/*)
+router.use("/auth", authRoutes);
+router.use("/classes", classRoutes);
 
 // Rate limiter: batasi maksimal 30 submit kuis per 1 menit per IP
 const submitLimiter = rateLimit({
@@ -23,8 +30,8 @@ const submitLimiter = rateLimit({
 
 router.get("/health", getHealth);
 router.post("/simpan-hasil", submitLimiter, simpanHasil);
-router.get("/riwayat", getRiwayat);
-router.get("/analytics", getAnalytics);
+router.get("/riwayat", requireAuth, getRiwayat);
+router.get("/analytics", requireAuth, getAnalytics);
 
 module.exports = router;
 

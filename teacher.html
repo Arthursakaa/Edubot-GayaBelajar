@@ -25,9 +25,15 @@
                     <img src="images/guru-dashboard.svg" alt="Ilustrasi portal dashboard guru" class="h-20 w-auto object-contain" width="112" height="80">
                 </div>
                 <div class="space-y-1.5 text-center sm:text-left">
-                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-extrabold uppercase tracking-wider">
-                        <i class="ph-duotone ph-chalkboard-teacher text-base" aria-hidden="true"></i>
-                        <span>Portal Guru &amp; Wali Kelas</span>
+                    <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-extrabold uppercase tracking-wider">
+                            <i class="ph-duotone ph-chalkboard-teacher text-base" aria-hidden="true"></i>
+                            <span>Portal Guru &amp; Wali Kelas</span>
+                        </div>
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200">
+                            <i class="ph-fill ph-check-circle text-sm text-emerald-600"></i>
+                            <span>Sesi Aktif</span>
+                        </div>
                     </div>
                     <h1 class="text-2xl md:text-3xl font-extrabold font-display text-slate-900">
                         Dashboard Analitik Gaya Belajar Kelas
@@ -38,15 +44,111 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-center gap-3 no-print shrink-0">
-                <button type="button" onclick="fetchAnalyticsData()" class="px-4 py-3 rounded-xl font-bold text-xs bg-slate-100 border-2 border-slate-200 hover:bg-slate-200 text-slate-800 transition flex items-center gap-2 cursor-pointer">
+            <div class="flex flex-wrap items-center justify-center gap-2.5 no-print shrink-0">
+                <button type="button" onclick="fetchAnalyticsData()" class="px-4 py-2.5 rounded-xl font-bold text-xs bg-slate-100 border-2 border-slate-200 hover:bg-slate-200 text-slate-800 transition flex items-center gap-2 cursor-pointer">
                     <i class="ph-bold ph-arrows-clockwise text-base" aria-hidden="true"></i>
-                    <span>Muat Ulang</span>
+                    <span>Muat Ulang Data</span>
                 </button>
-                <button type="button" onclick="window.print()" class="clay-btn-primary px-5 py-3 font-extrabold text-xs flex items-center gap-2">
+                <button type="button" onclick="window.print()" class="clay-btn-primary px-5 py-2.5 font-extrabold text-xs flex items-center gap-2">
                     <i class="ph-bold ph-printer text-base" aria-hidden="true"></i>
                     <span>Cetak Rekap Kelas</span>
                 </button>
+            </div>
+        </div>
+
+        <!-- Class Filter & Management Bar (Priority 1: Classroom Management) -->
+        <div class="clay-card p-4 sm:p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 border border-blue-100">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                        <i class="ph-duotone ph-chalkboard-simple text-xl" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <span class="text-[11px] font-extrabold uppercase text-slate-500 tracking-wider block">Pilih Kelas Binaan</span>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <select id="class-filter" class="font-bold text-xs sm:text-sm text-slate-800 bg-white border-2 border-blue-200 rounded-xl px-3 py-1.5 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none cursor-pointer">
+                                <option value="">Semua Kelas</option>
+                            </select>
+                            <div id="class-code-badge" class="hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs font-bold shadow-xs">
+                                <span>Kode Kuis: <strong id="current-class-code" class="text-blue-700 tracking-wider">VAK-4A</strong></span>
+                                <button type="button" id="btn-copy-code" class="text-slate-400 hover:text-blue-600 transition" title="Salin kode kuis">
+                                    <i class="ph-bold ph-copy text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="btn-open-create-modal" class="btn-clay px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs cursor-pointer shrink-0">
+                <i class="ph-bold ph-plus-circle text-base"></i>
+                <span>Buat Kelas Baru</span>
+            </button>
+        </div>
+
+        <!-- Modal Buat Kelas Baru (Claymorphism Accessible Dialog) -->
+        <div id="modal-create-class" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4" role="dialog" aria-modal="true" aria-labelledby="modal-class-title">
+            <div class="clay-card rounded-3xl p-6 sm:p-8 max-w-md w-full bg-white border border-white shadow-2xl space-y-5 animate-in fade-in duration-200">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <i class="ph-duotone ph-chalkboard-teacher text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 id="modal-class-title" class="text-lg font-extrabold font-display text-slate-900">Buat Kelas Baru</h2>
+                            <p class="text-xs text-slate-500 font-semibold">Buat kode kuis khusus untuk kelas binaan Anda</p>
+                        </div>
+                    </div>
+                    <button type="button" id="btn-close-modal" class="w-8 h-8 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center text-lg">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </div>
+
+                <form id="form-create-class" class="space-y-4">
+                    <div>
+                        <label for="input-class-name" class="block text-xs font-bold text-slate-700 mb-1">
+                            Nama Kelas <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="input-class-name" required placeholder="Contoh: Kelas 4B Unggulan" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-bold focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label for="input-grade-level" class="block text-xs font-bold text-slate-700 mb-1">
+                                Tingkat <span class="text-red-500">*</span>
+                            </label>
+                            <select id="input-grade-level" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm font-bold focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none bg-white">
+                                <option value="Kelas 1">Kelas 1</option>
+                                <option value="Kelas 2">Kelas 2</option>
+                                <option value="Kelas 3">Kelas 3</option>
+                                <option value="Kelas 4" selected>Kelas 4</option>
+                                <option value="Kelas 5">Kelas 5</option>
+                                <option value="Kelas 6">Kelas 6</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="input-academic-year" class="block text-xs font-bold text-slate-700 mb-1">
+                                Tahun Ajaran <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="input-academic-year" value="2025/2026" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm font-bold focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none text-center">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="input-class-code" class="block text-xs font-bold text-slate-700 mb-1">
+                            Kode Kuis (Opsional)
+                        </label>
+                        <input type="text" id="input-class-code" placeholder="Kosongkan untuk dibuatkan otomatis (mis. VAK-4B)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-bold focus:border-blue-600 focus:ring-2 focus:ring-blue-100 outline-none uppercase">
+                        <p class="text-[11px] text-slate-400 mt-1">Kode ini yang dibagikan ke murid agar hasil kuis masuk ke kelas Anda.</p>
+                    </div>
+
+                    <div id="modal-error-box" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold"></div>
+
+                    <button type="submit" id="btn-save-class" class="btn-clay w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-clay-button">
+                        <i class="ph-bold ph-check"></i>
+                        <span>Simpan &amp; Buat Kelas</span>
+                    </button>
+                </form>
             </div>
         </div>
 
@@ -213,6 +315,7 @@
                         <tr class="bg-blue-50/80 border-y-2 border-blue-100 text-slate-700 font-extrabold uppercase text-[11px] tracking-wider">
                             <th class="py-3.5 px-4">No</th>
                             <th class="py-3.5 px-4">Nama Siswa</th>
+                            <th class="py-3.5 px-4">Kelas</th>
                             <th class="py-3.5 px-4 text-center">Visual</th>
                             <th class="py-3.5 px-4 text-center">Auditori</th>
                             <th class="py-3.5 px-4 text-center">Kinestetik</th>
@@ -242,17 +345,79 @@
     </footer>
 
     <script>
+    // 1. Auth Guard - Pastikan Guru Sudah Login
+    const authToken = localStorage.getItem("edubot_token");
+    let currentAuthUser = null;
+    try {
+        currentAuthUser = JSON.parse(localStorage.getItem("edubot_user"));
+    } catch {
+        currentAuthUser = null;
+    }
+
+    if (!authToken || !currentAuthUser) {
+        window.location.href = "login.html?reason=unauthorized";
+    }
+
     let globalStudents = [];
     let distributionChart = null;
     let scoreBarChart = null;
+    let teacherClasses = [];
+    let currentSelectedClassId = "";
 
-    async function fetchAnalyticsData() {
-        const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
-            ? "http://localhost:3000/api"
-            : "https://edubot-gayabelajar-production.up.railway.app/api";
+    const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
+        ? "http://localhost:3000/api"
+        : "https://edubot-gayabelajar-production.up.railway.app/api";
 
+    // 2. Memuat Daftar Kelas Guru
+    async function fetchTeacherClasses() {
         try {
-            const res = await fetch(`${API_BASE}/analytics`);
+            const res = await fetch(`${API_BASE}/classes`, {
+                headers: { "Authorization": `Bearer ${authToken}` }
+            });
+            if (res.status === 401) {
+                handleUnauthorized();
+                return;
+            }
+            if (!res.ok) return;
+            const data = await res.json();
+            if (data.success && data.data) {
+                teacherClasses = data.data;
+                const selectEl = document.getElementById("class-filter");
+                selectEl.innerHTML = '<option value="">Semua Kelas</option>';
+                teacherClasses.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.id;
+                    opt.textContent = `${c.class_name} (${c.class_code || c.grade_level}) • ${c.total_siswa || 0} siswa`;
+                    selectEl.appendChild(opt);
+                });
+                if (currentSelectedClassId) {
+                    selectEl.value = currentSelectedClassId;
+                }
+            }
+        } catch (err) {
+            console.warn("Gagal memuat kelas guru:", err.message);
+        }
+    }
+
+    // 3. Memuat Data Analitik (Mendukung Filter Kelas)
+    async function fetchAnalyticsData(classId = currentSelectedClassId) {
+        try {
+            let url = `${API_BASE}/analytics`;
+            if (classId) {
+                url += `?class_id=${encodeURIComponent(classId)}`;
+            }
+
+            const res = await fetch(url, {
+                headers: {
+                    "Authorization": `Bearer ${authToken}`
+                }
+            });
+
+            if (res.status === 401) {
+                handleUnauthorized();
+                return;
+            }
+
             if (!res.ok) throw new Error("Gagal mengambil data dari server");
             const data = await res.json();
 
@@ -266,7 +431,7 @@
             console.error("Gagal memuat analitik:", err);
             document.getElementById("student-table-body").innerHTML = `
                 <tr>
-                    <td colspan="8" class="text-center py-8 text-red-700 font-bold">
+                    <td colspan="9" class="text-center py-8 text-red-700 font-bold">
                         <div class="flex flex-col items-center gap-2">
                             <img src="images/data-kosong.svg" alt="Tidak dapat memuat data" class="h-24 w-auto object-contain">
                             <span>Gagal terhubung ke backend server (${escapeHtml(err.message)}). Pastikan server backend Node.js port 3000 sedang aktif.</span>
@@ -275,6 +440,12 @@
                 </tr>
             `;
         }
+    }
+
+    function handleUnauthorized() {
+        localStorage.removeItem("edubot_token");
+        localStorage.removeItem("edubot_user");
+        window.location.href = "login.html?reason=unauthorized";
     }
 
     function updateKPIs(summary) {
@@ -361,10 +532,10 @@
         if (!students || students.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="8" class="text-center py-8 text-slate-600">
+                    <td colspan="9" class="text-center py-8 text-slate-600">
                         <div class="flex flex-col items-center gap-2">
                             <img src="images/data-kosong.svg" alt="Belum ada data siswa" class="h-24 w-auto object-contain">
-                            <span>Belum ada data siswa yang ditemukan.</span>
+                            <span>Belum ada data siswa yang ditemukan untuk filter kelas ini.</span>
                         </div>
                     </td>
                 </tr>
@@ -379,10 +550,15 @@
                 ? `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800">AI ML</span>` 
                 : `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-slate-100 text-slate-700">Aturan</span>`;
 
+            const classBadge = s.class_name
+                ? `<span class="px-2.5 py-1 rounded-xl text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200" title="Kode: ${s.class_code || '-'}">${escapeHtml(s.class_name)}</span>`
+                : `<span class="px-2.5 py-1 rounded-xl text-xs font-semibold bg-slate-100 text-slate-500">Umum</span>`;
+
             return `
                 <tr class="hover:bg-blue-50/40 transition">
                     <td class="py-3.5 px-4 font-bold text-slate-500">${idx + 1}</td>
                     <td class="py-3.5 px-4 font-extrabold text-slate-900">${escapeHtml(s.nama || "Tanpa Nama")}</td>
+                    <td class="py-3.5 px-4">${classBadge}</td>
                     <td class="py-3.5 px-4 text-center font-bold text-blue-700">${s.visual ?? "-"}</td>
                     <td class="py-3.5 px-4 text-center font-bold text-amber-700">${s.auditory ?? "-"}</td>
                     <td class="py-3.5 px-4 text-center font-bold text-emerald-700">${s.kinesthetic ?? "-"}</td>
@@ -416,8 +592,132 @@
         return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
     }
 
-    // Jalankan pertama kali
-    document.addEventListener("DOMContentLoaded", fetchAnalyticsData);
+    // 4. Interaksi Event & Modal
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchTeacherClasses();
+        fetchAnalyticsData();
+
+        // Event filter kelas
+        const classFilterSelect = document.getElementById("class-filter");
+        const classCodeBadge = document.getElementById("class-code-badge");
+        const currentClassCodeEl = document.getElementById("current-class-code");
+
+        classFilterSelect.addEventListener("change", (e) => {
+            currentSelectedClassId = e.target.value;
+            if (currentSelectedClassId) {
+                const found = teacherClasses.find(c => String(c.id) === String(currentSelectedClassId));
+                if (found && found.class_code) {
+                    currentClassCodeEl.textContent = found.class_code;
+                    classCodeBadge.classList.remove("hidden");
+                } else {
+                    classCodeBadge.classList.add("hidden");
+                }
+            } else {
+                classCodeBadge.classList.add("hidden");
+            }
+            fetchAnalyticsData(currentSelectedClassId);
+        });
+
+        // Event salin kode kelas
+        const btnCopyCode = document.getElementById("btn-copy-code");
+        if (btnCopyCode) {
+            btnCopyCode.addEventListener("click", () => {
+                const code = currentClassCodeEl.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    alert(`Kode kuis "${code}" berhasil disalin! Bagikan kode ini ke siswa Anda.`);
+                });
+            });
+        }
+
+        // Event Modal Buat Kelas
+        const modalCreateClass = document.getElementById("modal-create-class");
+        const btnOpenCreateModal = document.getElementById("btn-open-create-modal");
+        const btnCloseModal = document.getElementById("btn-close-modal");
+        const formCreateClass = document.getElementById("form-create-class");
+        const modalErrorBox = document.getElementById("modal-error-box");
+
+        btnOpenCreateModal.addEventListener("click", () => {
+            modalErrorBox.classList.add("hidden");
+            formCreateClass.reset();
+            document.getElementById("input-academic-year").value = "2025/2026";
+            modalCreateClass.classList.remove("hidden");
+            document.getElementById("input-class-name").focus();
+        });
+
+        btnCloseModal.addEventListener("click", () => {
+            modalCreateClass.classList.add("hidden");
+        });
+
+        modalCreateClass.addEventListener("click", (e) => {
+            if (e.target === modalCreateClass) {
+                modalCreateClass.classList.add("hidden");
+            }
+        });
+
+        // Submit Buat Kelas
+        formCreateClass.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            modalErrorBox.classList.add("hidden");
+
+            const className = document.getElementById("input-class-name").value.trim();
+            const gradeLevel = document.getElementById("input-grade-level").value;
+            const academicYear = document.getElementById("input-academic-year").value.trim();
+            const classCode = document.getElementById("input-class-code").value.trim() || undefined;
+
+            const submitBtn = document.getElementById("btn-save-class");
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <i class="ph-bold ph-spinner-gap animate-spin text-base"></i>
+                <span>Menyimpan Kelas...</span>
+            `;
+
+            try {
+                const res = await fetch(`${API_BASE}/classes`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        class_name: className,
+                        grade_level: gradeLevel,
+                        academic_year: academicYear,
+                        class_code: classCode
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    modalErrorBox.textContent = data.error || (data.details && data.details.join(", ")) || "Gagal membuat kelas";
+                    modalErrorBox.classList.remove("hidden");
+                    return;
+                }
+
+                // Berhasil membuat kelas!
+                modalCreateClass.classList.add("hidden");
+                alert(`Kelas "${data.data.class_name}" dengan Kode "${data.data.class_code}" berhasil dibuat!`);
+
+                // Muat ulang daftar kelas dan filter ke kelas yang baru dibuat
+                currentSelectedClassId = String(data.data.id);
+                await fetchTeacherClasses();
+                classFilterSelect.value = currentSelectedClassId;
+                currentClassCodeEl.textContent = data.data.class_code;
+                classCodeBadge.classList.remove("hidden");
+
+                fetchAnalyticsData(currentSelectedClassId);
+            } catch (err) {
+                modalErrorBox.textContent = "Koneksi bermasalah ke server backend.";
+                modalErrorBox.classList.remove("hidden");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `
+                    <i class="ph-bold ph-check"></i>
+                    <span>Simpan &amp; Buat Kelas</span>
+                `;
+            }
+        });
+    });
+    </script>
     </script>
 
 </body>
