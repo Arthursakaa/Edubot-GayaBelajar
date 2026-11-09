@@ -1,3 +1,14 @@
+const fs = require("fs");
+const path = require("path");
+
+// Memuat .env lokal secara otomatis jika ada
+const localEnvPath = path.resolve(__dirname, ".env");
+if (fs.existsSync(localEnvPath) && typeof process.loadEnvFile === "function") {
+  try {
+    process.loadEnvFile(localEnvPath);
+  } catch (_) {}
+}
+
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
