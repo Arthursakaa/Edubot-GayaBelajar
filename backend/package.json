@@ -4,7 +4,7 @@
   "description": "Backend Edubot Gaya Belajar",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node --env-file=.env server.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +13,9 @@
     "axios": "^1.6.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "mysql2": "^3.6.0"
+    "express-rate-limit": "^8.7.3",
+    "helmet": "^8.3.0",
+    "mysql2": "^3.6.0",
+    "zod": "^4.6.7"
   }
 }

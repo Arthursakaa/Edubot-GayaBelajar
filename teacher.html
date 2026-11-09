@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Guru &amp; Analitik Kelas - EduBot</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="components/navbar.js"></script>
+</head>
+
+<body class="bg-[#EFF6FF] min-h-screen flex flex-col justify-between">
+
+    <custom-navbar class="no-print"></custom-navbar>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 w-full flex-grow space-y-8">
+        
+        <!-- Dashboard Header -->
+        <div class="clay-card p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+                <div class="bg-blue-50 border-2 border-blue-100 rounded-2xl p-3 flex items-center justify-center shrink-0 w-28 h-24 mx-auto sm:mx-0">
+                    <img src="images/guru-dashboard.svg" alt="Ilustrasi portal dashboard guru" class="h-20 w-auto object-contain" width="112" height="80">
+                </div>
+                <div class="space-y-1.5 text-center sm:text-left">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-extrabold uppercase tracking-wider">
+                        <i class="ph-duotone ph-chalkboard-teacher text-base" aria-hidden="true"></i>
+                        <span>Portal Guru &amp; Wali Kelas</span>
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold font-display text-slate-900">
+                        Dashboard Analitik Gaya Belajar Kelas
+                    </h1>
+                    <p class="text-xs md:text-sm text-slate-600 font-semibold max-w-2xl">
+                        Pantau preferensi modalitas belajar seluruh murid untuk mempermudah rancangan pembelajaran berdiferensiasi.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-center gap-3 no-print shrink-0">
+                <button type="button" onclick="fetchAnalyticsData()" class="px-4 py-3 rounded-xl font-bold text-xs bg-slate-100 border-2 border-slate-200 hover:bg-slate-200 text-slate-800 transition flex items-center gap-2 cursor-pointer">
+                    <i class="ph-bold ph-arrows-clockwise text-base" aria-hidden="true"></i>
+                    <span>Muat Ulang</span>
+                </button>
+                <button type="button" onclick="window.print()" class="clay-btn-primary px-5 py-3 font-extrabold text-xs flex items-center gap-2">
+                    <i class="ph-bold ph-printer text-base" aria-hidden="true"></i>
+                    <span>Cetak Rekap Kelas</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- KPI Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="clay-card p-6 space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-slate-600 uppercase tracking-wider">Total Siswa Terdata</span>
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                        <i class="ph-duotone ph-users-three text-xl" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="text-3xl md:text-4xl font-extrabold font-display text-slate-900" id="kpi-total-siswa">--</div>
+                <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                    <i class="ph-fill ph-database text-xs" aria-hidden="true"></i>
+                    <span>Data Live MySQL</span>
+                </span>
+            </div>
+
+            <div class="clay-card p-6 space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-blue-700 uppercase tracking-wider">Rata-rata Visual</span>
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                        <i class="ph-duotone ph-eye text-xl" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="text-3xl md:text-4xl font-extrabold font-display text-blue-600" id="kpi-avg-visual">--</div>
+                <span class="text-xs font-semibold text-slate-600 block">Melihat gambar &amp; video</span>
+            </div>
+
+            <div class="clay-card p-6 space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-amber-700 uppercase tracking-wider">Rata-rata Auditori</span>
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                        <i class="ph-duotone ph-headphones text-xl" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="text-3xl md:text-4xl font-extrabold font-display text-amber-600" id="kpi-avg-auditory">--</div>
+                <span class="text-xs font-semibold text-slate-600 block">Mendengar penjelasan lisan</span>
+            </div>
+
+            <div class="clay-card p-6 space-y-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-emerald-700 uppercase tracking-wider">Rata-rata Kinestetik</span>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                        <i class="ph-duotone ph-hand-pointing text-xl" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="text-3xl md:text-4xl font-extrabold font-display text-emerald-600" id="kpi-avg-kinesthetic">--</div>
+                <span class="text-xs font-semibold text-slate-600 block">Praktik langsung &amp; gerak</span>
+            </div>
+
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Pie Chart: Distribusi Gaya Belajar -->
+            <div class="lg:col-span-5 clay-card p-6 space-y-4">
+                <div class="space-y-1">
+                    <h2 class="text-lg font-extrabold font-display text-slate-900 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-pie-slice text-xl text-blue-600" aria-hidden="true"></i>
+                        <span>Distribusi Gaya Belajar Siswa</span>
+                    </h2>
+                    <p class="text-xs text-slate-600 font-semibold">Komposisi modalitas dominan yang teridentifikasi</p>
+                </div>
+                <div class="w-full h-64 flex items-center justify-center">
+                    <canvas id="classDistributionChart" aria-label="Grafik distribusi gaya belajar kelas" role="img"></canvas>
+                </div>
+            </div>
+
+            <!-- Bar Chart: Komparasi Rata-rata Skor -->
+            <div class="lg:col-span-7 clay-card p-6 space-y-4">
+                <div class="space-y-1">
+                    <h2 class="text-lg font-extrabold font-display text-slate-900 flex items-center gap-2">
+                        <i class="ph-duotone ph-chart-bar text-xl text-blue-600" aria-hidden="true"></i>
+                        <span>Profil Rata-rata Skor Modalitas Kelas</span>
+                    </h2>
+                    <p class="text-xs text-slate-600 font-semibold">Keseimbangan aspek Visual, Auditori, dan Kinestetik kelas</p>
+                </div>
+                <div class="w-full h-64 flex items-center justify-center">
+                    <canvas id="classScoreBarChart" aria-label="Grafik batang rata-rata skor kelas" role="img"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Rekomendasi Strategi Mengajar untuk Guru -->
+        <div class="clay-card bg-gradient-to-r from-blue-50 to-amber-50/70 p-6 md:p-8 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center shrink-0">
+                    <i class="ph-duotone ph-compass text-2xl" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-extrabold font-display text-slate-900">Rekomendasi Strategi Diferensiasi Pembelajaran</h2>
+                    <p class="text-xs text-slate-600 font-semibold">Tips yang dapat diterapkan guru di kelas berdasarkan data asesmen:</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <div class="bg-white p-5 rounded-2xl border-2 border-blue-200 space-y-2">
+                    <div class="text-xs font-extrabold text-blue-700 uppercase flex items-center gap-1.5">
+                        <i class="ph-duotone ph-eye text-base" aria-hidden="true"></i>
+                        <span>Strategi Visual</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-semibold">
+                        Sediakan infografis atau tayangan video animasi di awal materi. Berikan kesempatan siswa mencatat dengan spidol warna.
+                    </p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border-2 border-amber-200 space-y-2">
+                    <div class="text-xs font-extrabold text-amber-800 uppercase flex items-center gap-1.5">
+                        <i class="ph-duotone ph-headphones text-base" aria-hidden="true"></i>
+                        <span>Strategi Auditori</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-semibold">
+                        Gunakan metode cerita lisan berirama dan beri sesi tanya jawab aktif atau diskusi bertukar pendapat antar-teman.
+                    </p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl border-2 border-emerald-200 space-y-2">
+                    <div class="text-xs font-extrabold text-emerald-800 uppercase flex items-center gap-1.5">
+                        <i class="ph-duotone ph-hand-pointing text-base" aria-hidden="true"></i>
+                        <span>Strategi Kinestetik</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-semibold">
+                        Gunakan alat peraga konkret (balok/puzzle) dan sisipkan aktivitas simulasi atau eksperimen kelompok langsung.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Data Table -->
+        <div class="clay-card overflow-hidden space-y-4 p-6">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
+                <div class="space-y-1">
+                    <h2 class="text-lg font-extrabold font-display text-slate-900 flex items-center gap-2">
+                        <i class="ph-duotone ph-student text-xl text-blue-600" aria-hidden="true"></i>
+                        <span>Daftar Hasil Asesmen Siswa</span>
+                    </h2>
+                    <p class="text-xs text-slate-600 font-semibold">Daftar siswa yang telah menyelesaikan kuis gaya belajar</p>
+                </div>
+
+                <!-- Search Input -->
+                <div class="no-print relative w-full sm:w-64">
+                    <label for="search-input" class="sr-only">Cari nama siswa</label>
+                    <i class="ph-bold ph-magnifying-glass text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 text-base" aria-hidden="true"></i>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        oninput="filterStudentTable()" 
+                        placeholder="Cari nama siswa..." 
+                        class="pl-10 pr-4 py-2.5 text-xs font-bold border-2 border-blue-200 rounded-xl focus:border-blue-600 w-full bg-white text-slate-800"
+                    >
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs md:text-sm">
+                    <thead>
+                        <tr class="bg-blue-50/80 border-y-2 border-blue-100 text-slate-700 font-extrabold uppercase text-[11px] tracking-wider">
+                            <th class="py-3.5 px-4">No</th>
+                            <th class="py-3.5 px-4">Nama Siswa</th>
+                            <th class="py-3.5 px-4 text-center">Visual</th>
+                            <th class="py-3.5 px-4 text-center">Auditori</th>
+                            <th class="py-3.5 px-4 text-center">Kinestetik</th>
+                            <th class="py-3.5 px-4">Hasil Gaya Belajar</th>
+                            <th class="py-3.5 px-4">Sumber Analisis</th>
+                            <th class="py-3.5 px-4">Tanggal Tes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-table-body" class="divide-y divide-slate-100 font-semibold text-slate-800">
+                        <tr>
+                            <td colspan="8" class="text-center py-8 text-slate-600">
+                                <i class="ph-bold ph-spinner-gap animate-spin text-lg inline-block mr-1 align-middle" aria-hidden="true"></i>
+                                <span>Sedang mengambil data dari server...</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t-2 border-blue-100 py-6 text-center text-xs text-slate-600 font-bold no-print">
+        <p>© 2026 EduBot - Platform Pendukung Pembelajaran Berdiferensiasi Siswa Sekolah Dasar.</p>
+    </footer>
+
+    <script>
+    let globalStudents = [];
+    let distributionChart = null;
+    let scoreBarChart = null;
+
+    async function fetchAnalyticsData() {
+        const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
+            ? "http://localhost:3000/api"
+            : "https://edubot-gayabelajar-production.up.railway.app/api";
+
+        try {
+            const res = await fetch(`${API_BASE}/analytics`);
+            if (!res.ok) throw new Error("Gagal mengambil data dari server");
+            const data = await res.json();
+
+            if (data.success) {
+                updateKPIs(data.summary);
+                renderCharts(data.distribution, data.summary.rata_rata);
+                globalStudents = data.recent_students || [];
+                renderTable(globalStudents);
+            }
+        } catch (err) {
+            console.error("Gagal memuat analitik:", err);
+            document.getElementById("student-table-body").innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-8 text-red-700 font-bold">
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="images/data-kosong.svg" alt="Tidak dapat memuat data" class="h-24 w-auto object-contain">
+                            <span>Gagal terhubung ke backend server (${escapeHtml(err.message)}). Pastikan server backend Node.js port 3000 sedang aktif.</span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    function updateKPIs(summary) {
+        document.getElementById("kpi-total-siswa").textContent = summary.total_siswa || 0;
+        document.getElementById("kpi-avg-visual").textContent = (summary.rata_rata.visual || 0) + " pts";
+        document.getElementById("kpi-avg-auditory").textContent = (summary.rata_rata.auditory || 0) + " pts";
+        document.getElementById("kpi-avg-kinesthetic").textContent = (summary.rata_rata.kinesthetic || 0) + " pts";
+    }
+
+    function renderCharts(dist, avg) {
+        // 1. Distribution Doughnut Chart
+        const distLabels = Object.keys(dist || {});
+        const distValues = Object.values(dist || {});
+
+        const colorMap = {
+            "visual": "#2563EB",
+            "auditory": "#F59E0B",
+            "kinesthetic": "#10B981",
+            "visual_auditory": "#8B5CF6",
+            "visual-auditory": "#8B5CF6",
+            "visual_kinesthetic": "#06B6D4",
+            "visual-kinesthetic": "#06B6D4",
+            "auditory_kinesthetic": "#EC4899",
+            "auditory-kinesthetic": "#EC4899"
+        };
+
+        const bgColors = distLabels.map(label => colorMap[label] || "#64748B");
+
+        const ctx1 = document.getElementById("classDistributionChart");
+        if (ctx1) {
+            if (distributionChart) distributionChart.destroy();
+            distributionChart = new Chart(ctx1, {
+                type: "doughnut",
+                data: {
+                    labels: distLabels.map(l => l.replace(/_/g, "-")),
+                    datasets: [{
+                        data: distValues,
+                        backgroundColor: bgColors,
+                        borderWidth: 2,
+                        borderColor: "#ffffff"
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11, family: "'Nunito'", weight: "700" } } }
+                    }
+                }
+            });
+        }
+
+        // 2. Average Score Bar Chart
+        const ctx2 = document.getElementById("classScoreBarChart");
+        if (ctx2) {
+            if (scoreBarChart) scoreBarChart.destroy();
+            scoreBarChart = new Chart(ctx2, {
+                type: "bar",
+                data: {
+                    labels: ["Visual", "Auditori", "Kinestetik"],
+                    datasets: [{
+                        label: "Rata-rata Skor Kelas",
+                        data: [avg.visual || 0, avg.auditory || 0, avg.kinesthetic || 0],
+                        backgroundColor: ["#2563EB", "#F59E0B", "#10B981"],
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, max: 10 }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    }
+
+    function renderTable(students) {
+        const tbody = document.getElementById("student-table-body");
+        if (!students || students.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="text-center py-8 text-slate-600">
+                        <div class="flex flex-col items-center gap-2">
+                            <img src="images/data-kosong.svg" alt="Belum ada data siswa" class="h-24 w-auto object-contain">
+                            <span>Belum ada data siswa yang ditemukan.</span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = students.map((s, idx) => {
+            const dateStr = s.created_at ? new Date(s.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "-";
+            const badgeClass = getStyleBadge(s.hasil);
+            const sourceBadge = s.source === "ml" 
+                ? `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800">AI ML</span>` 
+                : `<span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-slate-100 text-slate-700">Aturan</span>`;
+
+            return `
+                <tr class="hover:bg-blue-50/40 transition">
+                    <td class="py-3.5 px-4 font-bold text-slate-500">${idx + 1}</td>
+                    <td class="py-3.5 px-4 font-extrabold text-slate-900">${escapeHtml(s.nama || "Tanpa Nama")}</td>
+                    <td class="py-3.5 px-4 text-center font-bold text-blue-700">${s.visual ?? "-"}</td>
+                    <td class="py-3.5 px-4 text-center font-bold text-amber-700">${s.auditory ?? "-"}</td>
+                    <td class="py-3.5 px-4 text-center font-bold text-emerald-700">${s.kinesthetic ?? "-"}</td>
+                    <td class="py-3.5 px-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-extrabold ${badgeClass}">
+                            ${s.hasil ? s.hasil.replace(/_/g, "-") : "-"}
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-4">${sourceBadge}</td>
+                    <td class="py-3.5 px-4 text-slate-600 text-xs font-semibold">${dateStr}</td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+    function getStyleBadge(style) {
+        if (!style) return "bg-slate-100 text-slate-700";
+        if (style.includes("visual") && !style.includes("auditory") && !style.includes("kinesthetic")) return "bg-blue-100 text-blue-800";
+        if (style.includes("auditory") && !style.includes("visual") && !style.includes("kinesthetic")) return "bg-amber-100 text-amber-800";
+        if (style.includes("kinesthetic") && !style.includes("visual") && !style.includes("auditory")) return "bg-emerald-100 text-emerald-800";
+        return "bg-purple-100 text-purple-800";
+    }
+
+    function filterStudentTable() {
+        const query = document.getElementById("search-input").value.toLowerCase();
+        const filtered = globalStudents.filter(s => (s.nama || "").toLowerCase().includes(query));
+        renderTable(filtered);
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+    }
+
+    // Jalankan pertama kali
+    document.addEventListener("DOMContentLoaded", fetchAnalyticsData);
+    </script>
+
+</body>
+</html>

@@ -3,60 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tentang - Edubot</title>
+    <title>Tentang EduBot - Mengenal Gaya Belajar Anak</title>
+    
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="components/navbar.js"></script>
 </head>
-<body class="bg-gradient-to-b from-yellow-100 to-blue-50 min-h-screen">
+
+<body class="bg-[#EFF6FF] min-h-screen flex flex-col justify-between">
+
     <custom-navbar></custom-navbar>
-    <main class="section">
-        <div class="container">
-            <div class="max-w-3xl mx-auto card p-8">
-<h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Tentang Edubot</h1>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 md:py-16 w-full flex-grow space-y-8">
+        
+        <!-- Header -->
+        <div class="text-center space-y-3">
+            <span class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-blue-100 text-blue-800 border border-blue-200">
+                <i class="ph-duotone ph-book-open-text text-base" aria-hidden="true"></i>
+                <span>Informasi &amp; Panduan Edukasi</span>
+            </span>
+            <h1 class="text-3xl md:text-5xl font-extrabold font-display text-slate-900">
+                Tentang <span class="text-blue-600">EduBot</span>
+            </h1>
+            <p class="text-slate-700 text-sm md:text-base max-w-xl mx-auto font-semibold">
+                Membantu orang tua dan guru memahami keunikan cara belajar setiap anak melalui pendekatan modalitas aktivitas yang positif.
+            </p>
+        </div>
+
+        <!-- Content Cards -->
+        <div class="clay-card p-6 md:p-10 space-y-8">
             
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold text-blue-500 mb-3">Apa itu Gaya Belajar VAK?</h2>
-                <p class="text-gray-700 mb-4">
-                    Gaya Belajar VAK (Visual, Auditory, Kinesthetic) adalah model yang dikembangkan oleh psikolog untuk memahami cara terbaik seseorang dalam menerima dan memproses informasi.
+            <!-- Hero Illustration -->
+            <div class="bg-blue-50/80 border-2 border-blue-100 rounded-2xl p-6 flex items-center justify-center">
+                <img src="images/tentang.svg" alt="Ilustrasi buku dan pengetahuan edukasi anak" class="h-44 w-auto object-contain" width="260" height="176">
+            </div>
+
+            <!-- Section 1 -->
+            <div class="space-y-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-11 h-11 rounded-2xl bg-blue-100 border-2 border-blue-200 text-blue-700 flex items-center justify-center shrink-0">
+                        <i class="ph-duotone ph-brain text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold font-display text-slate-900">Apa itu Pendekatan VAK?</h2>
+                </div>
+                <p class="text-slate-700 text-sm md:text-base leading-relaxed font-semibold">
+                    Model <b>VAK (Visual, Auditory, Kinesthetic)</b> adalah pendekatan psikologi pendidikan yang memetakan kecenderungan indra yang paling nyaman digunakan seseorang dalam menyerap dan mengolah informasi baru.
                 </p>
-                <p class="text-gray-700">
-                    Setiap anak memiliki kecenderungan gaya belajar yang berbeda-beda. Dengan mengetahui gaya belajar dominan anak, orang tua dan guru dapat menyesuaikan metode pembelajaran agar lebih efektif.
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                    <div class="p-4 rounded-2xl bg-blue-50 border-2 border-blue-200 space-y-1.5">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center">
+                            <i class="ph-duotone ph-eye text-xl" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="font-extrabold font-display text-blue-900 text-lg">Visual</h3>
+                        <p class="text-xs text-blue-800 font-semibold">Memahami lewat gambar, warna, video, dan bagan teratur.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-amber-50 border-2 border-amber-200 space-y-1.5">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500 text-slate-900 flex items-center justify-center">
+                            <i class="ph-duotone ph-headphones text-xl" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="font-extrabold font-display text-amber-900 text-lg">Auditori</h3>
+                        <p class="text-xs text-amber-900 font-semibold">Memahami lewat suara cerita, musik, irama, dan diskusi lisan.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200 space-y-1.5">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                            <i class="ph-duotone ph-hand-pointing text-xl" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="font-extrabold font-display text-emerald-900 text-lg">Kinestetik</h3>
+                        <p class="text-xs text-emerald-900 font-semibold">Memahami lewat sentuhan, gerak fisik, dan eksperimen langsung.</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-blue-100">
+
+            <!-- Section 2: Prinsip Pedagogis Penting -->
+            <div class="p-5 rounded-2xl bg-amber-50 border-2 border-amber-200 space-y-2">
+                <div class="flex items-center space-x-2 text-amber-900 font-extrabold text-sm md:text-base">
+                    <i class="ph-duotone ph-lightbulb-filament text-xl text-amber-700" aria-hidden="true"></i>
+                    <span>Prinsip Penting: VAK Bukan Label Permanen!</span>
+                </div>
+                <p class="text-xs md:text-sm text-slate-800 leading-relaxed font-semibold">
+                    Hasil kuis EduBot tidak bertujuan membatasi kecerdasan anak atau memberi cap permanen. Sebaliknya, hasil ini digunakan sebagai <b>panduan variasi aktivitas belajar</b> agar guru dan orang tua bisa menyajikan materi pelajaran dengan cara yang menyenangkan dan tidak membosankan bagi anak.
                 </p>
             </div>
-            
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold text-blue-500 mb-3">Bagaimana Tes Ini Bekerja?</h2>
-                <p class="text-gray-700 mb-4">
-                    Tes ini menggunakan sistem berbasis aturan sederhana untuk menganalisis jawaban anak. Setiap jawaban akan menambah skor pada salah satu kategori gaya belajar (Visual, Auditori, atau Kinestetik).
-                </p>
-                <p class="text-gray-700">
-                    Setelah semua pertanyaan dijawab, sistem akan membandingkan total skor dari ketiga kategori dan menentukan gaya belajar yang paling dominan.
-                </p>
-            </div>
-            
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold text-blue-500 mb-3">Untuk Siapa Tes Ini?</h2>
-                <p class="text-gray-700 mb-4">
-                    Tes ini dirancang khusus untuk anak-anak usia sekolah dasar (6-12 tahun). Pertanyaan-pertanyaan disusun dengan bahasa yang sederhana dan mudah dipahami oleh anak-anak.
-                </p>
-                <p class="text-gray-700">
-                    Orang tua atau guru dapat mendampingi anak saat mengerjakan tes jika diperlukan, namun biarkan anak memilih jawaban yang paling sesuai dengan dirinya sendiri.
+
+            <!-- Section 3 -->
+            <div class="space-y-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-11 h-11 rounded-2xl bg-blue-100 border-2 border-blue-200 text-blue-700 flex items-center justify-center shrink-0">
+                        <i class="ph-duotone ph-cpu text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <h2 class="text-2xl font-extrabold font-display text-slate-900">Bagaimana EduBot Bekerja?</h2>
+                </div>
+                <p class="text-slate-700 text-sm md:text-base leading-relaxed font-semibold">
+                    Setiap jawaban dari 10 pertanyaan kuis merepresentasikan preferensi aktivitas harian siswa. Sistem backend menghubungkan skor tersebut dengan <b>Machine Learning Decision Tree</b> dan aturan heuristik untuk memberikan profil gaya belajar yang berimbang serta tips belajar yang sesuai.
                 </p>
             </div>
-            
-            <div class="text-center mt-8">
-                <a href="quiz.html" class="inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-bold py-3 px-8 rounded-full text-lg shadow-md transition duration-300 transform hover:scale-105">
-                    Coba Tes Sekarang <i data-feather="arrow-right" class="inline ml-2"></i>
+
+            <!-- CTA Button -->
+            <div class="text-center pt-4">
+                <a href="quiz.html" class="clay-btn-primary inline-flex items-center justify-center px-8 py-4 font-extrabold text-base gap-2">
+                    <span>Coba Tes Sekarang</span>
+                    <i class="ph-bold ph-rocket-launch text-xl" aria-hidden="true"></i>
                 </a>
             </div>
+
         </div>
+
     </main>
 
-    <script>
-        feather.replace();
-    </script>
+    <!-- Footer -->
+    <footer class="bg-white border-t-2 border-blue-100 py-6 text-center text-xs text-slate-600 font-bold">
+        © 2026 EduBot - Platform Pendukung Asesmen Gaya Belajar Siswa Sekolah Dasar.
+    </footer>
+
 </body>
 </html>

@@ -3,59 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edubot - Temukan Gaya Belajar Anak</title>
+    <title>EduBot - Temukan Gaya Belajar Seru Kamu!</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="components/navbar.js"></script>
 </head>
-<body class="bg-gradient-to-b from-yellow-100 to-blue-50 min-h-screen">
+
+<body class="bg-[#EFF6FF] min-h-screen flex flex-col justify-between">
+    
     <custom-navbar></custom-navbar>
-    <main class="section">
-        <div class="container">
-            <section class="text-center max-w-3xl mx-auto animate-fadeIn">
-                <h1 class="text-4xl md:text-5xl font-bold text-blue-600 mb-6">Yuk Coba Tes Gaya Belajar Kamu!</h1>
-<p class="text-xl text-gray-700 mb-8">Tes sederhana untuk mengetahui apakah kamu lebih mudah belajar secara Visual, Auditori, atau Kinestetik</p>
-<div class="card p-8 mb-10 animate-fadeIn delay-100">
-                    <div class="flex justify-center mb-6">
-                        <img src="images/gayabelajar.png" alt="Anak belajar" class="img-responsive w-full max-w-md">
-                    </div>
-                    <h2 class="text-2xl font-semibold text-blue-500 mb-4 hovered-element">Yuk Kenali Gaya Belajarmu!</h2>
-<p class="text-gray-600 mb-6">Jawab 10 pertanyaan seru untuk tahu cara belajar yang paling cocok buat kamu!</p>
-<a href="quiz.html" class="btn btn-secondary">
-                        Mulai Tes Sekarang <i data-feather="arrow-right" class="inline"></i>
+
+    <!-- Hero Section -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            
+            <!-- Left Content -->
+            <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border-2 border-blue-200 text-blue-700 text-xs md:text-sm font-bold shadow-sm">
+                    <i class="ph-duotone ph-sparkle text-amber-500 text-lg" aria-hidden="true"></i>
+                    <span>Asesmen Preferensi Belajar VAK Interaktif &amp; Cerdas</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-display text-slate-900 leading-tight">
+                    Belajar Jadi Lebih Asik &amp; Seru Bareng 
+                    <span class="text-blue-600 underline decoration-amber-400 decoration-wavy decoration-4 underline-offset-8">EduBot!</span>
+                </h1>
+
+                <p class="text-base sm:text-lg text-slate-700 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-semibold">
+                    Setiap anak punya cara belajar uniknya masing-masing. Jawab 10 pertanyaan santai untuk mengetahui apakah kamu lebih senang belajar lewat <b>Melihat (Visual)</b>, <b>Mendengar (Auditori)</b>, atau <b>Bergerak (Kinestetik)</b>!
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-2">
+                    <a href="quiz.html" 
+                       class="clay-btn-primary inline-flex items-center justify-center gap-2.5 px-8 py-4 font-extrabold text-base md:text-lg">
+                        <span>Mulai Tes Sekarang</span>
+                        <i class="ph-bold ph-rocket-launch text-xl" aria-hidden="true"></i>
+                    </a>
+                    
+                    <a href="teacher.html" 
+                       class="clay-btn-secondary inline-flex items-center justify-center gap-2 px-6 py-4 font-extrabold text-sm md:text-base">
+                        <i class="ph-duotone ph-chalkboard-teacher text-xl" aria-hidden="true"></i>
+                        <span>Portal Dashboard Guru</span>
                     </a>
                 </div>
-            </section>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <div class="text-blue-500 mb-4">
-                        <i data-feather="eye" class="w-10 h-10"></i>
+
+                <!-- Trust Badges -->
+                <div class="grid grid-cols-3 gap-3 pt-4 max-w-lg mx-auto lg:mx-0">
+                    <div class="clay-card p-3.5 text-center">
+                        <div class="flex items-center justify-center gap-1.5 text-blue-600 font-display text-xl font-extrabold">
+                            <i class="ph-duotone ph-list-checks text-2xl" aria-hidden="true"></i>
+                            <span>10 Soal</span>
+                        </div>
+                        <div class="text-xs font-bold text-slate-600">Pilihan Santai</div>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Visual</h3>
-                    <p class="text-gray-600">Belajar melalui gambar, warna, dan visualisasi</p>
+                    <div class="clay-card p-3.5 text-center">
+                        <div class="flex items-center justify-center gap-1.5 text-amber-600 font-display text-xl font-extrabold">
+                            <i class="ph-duotone ph-timer text-2xl" aria-hidden="true"></i>
+                            <span>3 Menit</span>
+                        </div>
+                        <div class="text-xs font-bold text-slate-600">Durasi Singkat</div>
+                    </div>
+                    <div class="clay-card p-3.5 text-center">
+                        <div class="flex items-center justify-center gap-1.5 text-pink-600 font-display text-xl font-extrabold">
+                            <i class="ph-duotone ph-brain text-2xl" aria-hidden="true"></i>
+                            <span>AI VAK</span>
+                        </div>
+                        <div class="text-xs font-bold text-slate-600">Analisis Cerdas</div>
+                    </div>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <div class="text-blue-500 mb-4">
-                        <i data-feather="headphones" class="w-10 h-10"></i>
+
+            </div>
+
+            <!-- Right Hero Vector Illustration -->
+            <div class="lg:col-span-5 flex justify-center">
+                <div class="relative w-full max-w-md">
+                    <div class="clay-card p-6 md:p-8 animate-float text-center space-y-5">
+                        <div class="bg-blue-50/80 border-2 border-blue-100 rounded-2xl p-5 flex items-center justify-center">
+                            <img src="images/hero-belajar.svg" alt="Ilustrasi anak belajar secara interaktif bersama EduBot" class="w-full h-52 object-contain" width="320" height="208">
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold">
+                                <i class="ph-fill ph-check-circle text-sm" aria-hidden="true"></i>
+                                <span>Sahabat Edukasi Anak SD</span>
+                            </div>
+                            <h2 class="text-2xl font-extrabold font-display text-slate-900">Kenali Cara Belajarmu!</h2>
+                            <p class="text-xs sm:text-sm text-slate-600 font-semibold max-w-xs mx-auto">
+                                Tidak ada nilai salah atau benar. Pilih aktivitas yang paling membuatmu gembira!
+                            </p>
+                        </div>
+
+                        <a href="quiz.html" class="clay-btn-secondary flex items-center justify-center gap-2 w-full py-3.5 font-extrabold text-sm">
+                            <span>Ikuti Kuis Gaya Belajar</span>
+                            <i class="ph-bold ph-arrow-right text-base" aria-hidden="true"></i>
+                        </a>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Auditori</h3>
-                    <p class="text-gray-600">Belajar melalui suara, musik, dan penjelasan lisan</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
-                    <div class="text-blue-500 mb-4">
-                        <i data-feather="activity" class="w-10 h-10"></i>
+            </div>
+
+        </div>
+
+        <!-- 3 Cards VAK Section -->
+        <section class="mt-20" aria-labelledby="vak-heading">
+            <div class="text-center max-w-2xl mx-auto mb-10 space-y-2">
+                <h2 id="vak-heading" class="text-3xl md:text-4xl font-extrabold font-display text-slate-900">Kenali 3 Gaya Belajar Utama</h2>
+                <p class="text-sm md:text-base text-slate-700 font-semibold">Setiap modalitas memiliki cara seru yang berbeda dalam memahami pelajaran:</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Visual Card -->
+                <article class="clay-card clay-card-interactive p-6 flex flex-col justify-between space-y-4">
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 border-2 border-blue-100 rounded-2xl p-4 h-44 flex items-center justify-center">
+                            <img src="images/gaya-visual.svg" alt="Ilustrasi gaya belajar visual dengan gambar dan sketsa" class="h-36 w-auto object-contain" loading="lazy" width="220" height="144">
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-100 border-2 border-blue-200 text-blue-700 flex items-center justify-center shrink-0">
+                                <i class="ph-duotone ph-eye text-2xl" aria-hidden="true"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-blue-600">Modalitas 1</span>
+                                <h3 class="text-xl font-extrabold font-display text-slate-900">Gaya Belajar Visual</h3>
+                            </div>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed font-semibold">
+                            Anak yang hebat dalam mengingat lewat <b>gambar, warna, video, dan peta konsep</b>. Sangat suka melihat contoh visual sebelum mencoba.
+                        </p>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">Kinestetik</h3>
-                    <p class="text-gray-600">Belajar melalui gerakan dan pengalaman langsung</p>
+                    <div class="flex items-center gap-2 text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 px-3.5 py-2.5 rounded-xl">
+                        <i class="ph-duotone ph-lightbulb text-base text-blue-600 shrink-0" aria-hidden="true"></i>
+                        <span>Cocok dengan: Buku bergambar &amp; video edukatif</span>
+                    </div>
+                </article>
+
+                <!-- Auditory Card -->
+                <article class="clay-card clay-card-interactive p-6 flex flex-col justify-between space-y-4">
+                    <div class="space-y-4">
+                        <div class="bg-amber-50 border-2 border-amber-100 rounded-2xl p-4 h-44 flex items-center justify-center">
+                            <img src="images/gaya-auditori.svg" alt="Ilustrasi gaya belajar auditori dengan mendengarkan suara" class="h-36 w-auto object-contain" loading="lazy" width="220" height="144">
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-100 border-2 border-amber-200 text-amber-800 flex items-center justify-center shrink-0">
+                                <i class="ph-duotone ph-headphones text-2xl" aria-hidden="true"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-amber-700">Modalitas 2</span>
+                                <h3 class="text-xl font-extrabold font-display text-slate-900">Gaya Belajar Auditori</h3>
+                            </div>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed font-semibold">
+                            Anak yang cepat paham lewat <b>penjelasan lisan, cerita guru, dan diskusi seru</b> bersama teman. Suka mengulang materi dengan suara jelas.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-3.5 py-2.5 rounded-xl">
+                        <i class="ph-duotone ph-lightbulb text-base text-amber-700 shrink-0" aria-hidden="true"></i>
+                        <span>Cocok dengan: Cerita lisan &amp; diskusi kelompok</span>
+                    </div>
+                </article>
+
+                <!-- Kinesthetic Card -->
+                <article class="clay-card clay-card-interactive p-6 flex flex-col justify-between space-y-4">
+                    <div class="space-y-4">
+                        <div class="bg-emerald-50 border-2 border-emerald-100 rounded-2xl p-4 h-44 flex items-center justify-center">
+                            <img src="images/gaya-kinestetik.svg" alt="Ilustrasi gaya belajar kinestetik dengan menyusun balok praktik" class="h-36 w-auto object-contain" loading="lazy" width="220" height="144">
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-100 border-2 border-emerald-200 text-emerald-800 flex items-center justify-center shrink-0">
+                                <i class="ph-duotone ph-hand-pointing text-2xl" aria-hidden="true"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-700">Modalitas 3</span>
+                                <h3 class="text-xl font-extrabold font-display text-slate-900">Gaya Belajar Kinestetik</h3>
+                            </div>
+                        </div>
+                        <p class="text-slate-700 text-sm leading-relaxed font-semibold">
+                            Anak yang energik dan suka belajar lewat <b>praktik langsung, bermain peran, alat peraga, dan eksperimen fisik</b>.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs font-bold text-emerald-900 bg-emerald-50 border border-emerald-200 px-3.5 py-2.5 rounded-xl">
+                        <i class="ph-duotone ph-lightbulb text-base text-emerald-700 shrink-0" aria-hidden="true"></i>
+                        <span>Cocok dengan: Eksperimen sains &amp; alat peraga</span>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- Teacher CTA Banner -->
+        <section class="mt-16 clay-card bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 border-blue-800 p-8 md:p-10 text-white grid grid-cols-1 md:grid-cols-12 items-center gap-8">
+            <div class="md:col-span-8 space-y-3 text-center md:text-left">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-amber-300 text-xs font-extrabold uppercase tracking-wider">
+                    <i class="ph-duotone ph-chalkboard-teacher text-base" aria-hidden="true"></i>
+                    <span>Fitur Guru &amp; Wali Kelas</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-extrabold font-display text-white">Pantau Gaya Belajar Seluruh Kelas</h2>
+                <p class="text-blue-100 text-sm md:text-base max-w-xl font-semibold">
+                    Lihat ringkasan statistik kelas, grafik perbandingan modalitas belajar siswa, serta panduan strategi diferensiasi mengajar di Dashboard Guru.
+                </p>
+                <div class="pt-2">
+                    <a href="teacher.html" class="clay-btn-secondary inline-flex items-center gap-2 px-6 py-3.5 font-extrabold text-sm">
+                        <i class="ph-bold ph-chart-bar text-lg" aria-hidden="true"></i>
+                        <span>Buka Dashboard Guru</span>
+                    </a>
+                </div>
+            </div>
+            <div class="md:col-span-4 flex justify-center">
+                <div class="bg-white/95 rounded-2xl p-4 border-2 border-blue-200 shadow-lg">
+                    <img src="images/guru-dashboard.svg" alt="Ilustrasi guru menganalisis profil belajar kelas" class="h-36 w-auto object-contain" loading="lazy" width="200" height="144">
                 </div>
             </div>
         </section>
+
     </main>
 
-    <script>
-        feather.replace();
-    </script>
+    <!-- Footer -->
+    <footer class="bg-white border-t-2 border-blue-100 py-6 text-center text-xs text-slate-600 font-bold mt-16">
+        <p>© 2026 EduBot - Platform Pendukung Asesmen Gaya Belajar Siswa Sekolah Dasar.</p>
+    </footer>
+
 </body>
 </html>

@@ -2,86 +2,201 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Tes Gaya Belajar - Edubot</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>Petualangan Kuis Gaya Belajar - EduBot</title>
+    
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="components/navbar.js"></script>
 </head>
 
-<body class="bg-gradient-to-b from-yellow-100 to-blue-50 min-h-screen">
+<body class="bg-[#EFF6FF] min-h-screen flex flex-col justify-between">
 
-<custom-navbar></custom-navbar>
+    <!-- Toast Notifikasi Interaktif -->
+    <div id="notice-toast" role="alert" aria-live="polite" class="hidden fixed top-5 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3.5 rounded-2xl shadow-xl flex items-center space-x-2.5 transition-all duration-300">
+        <i id="notice-icon" class="ph-fill ph-warning-circle text-xl" aria-hidden="true"></i>
+        <span id="notice-text" class="font-bold text-sm"></span>
+    </div>
 
-<div class="flex justify-center py-10">
+    <custom-navbar></custom-navbar>
 
-<div id="start-screen" class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-    <h1 class="text-2xl font-bold text-center mb-6 text-blue-600">
-        Tes Gaya Belajar
-    </h1>
+    <main class="max-w-4xl mx-auto px-4 py-8 md:py-12 w-full flex-grow flex items-center justify-center">
 
-    <label class="block mb-2 font-medium text-gray-700">
-        Nama Peserta
-    </label>
-    <input
-        type="text"
-        id="nama-input"
-        class="w-full p-3 border rounded-lg mb-4"
-        placeholder="Masukkan nama kamu"
-    >
+        <!-- 1. START SCREEN (Input Nama & Lencana Karakter) -->
+        <div id="start-screen" class="clay-card p-7 md:p-10 max-w-lg w-full space-y-6 text-center">
+            
+            <div class="bg-blue-50/80 border-2 border-blue-100 rounded-2xl p-4 flex items-center justify-center">
+                <img src="images/kuis-mulai.svg" alt="Ilustrasi memulai kuis gaya belajar" class="h-36 w-auto object-contain" width="220" height="144">
+            </div>
 
-    <button
-        id="start-btn"
-        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg"
-    >
-        Mulai Tes
-    </button>
-</div>
+            <div class="space-y-1">
+                <h1 class="text-2xl md:text-3xl font-extrabold font-display text-slate-900">
+                    Mulai Petualangan Kuis!
+                </h1>
+                <p class="text-sm text-slate-600 font-semibold">
+                    Pilih lencana favoritmu dan ketik nama panggilanmu:
+                </p>
+            </div>
 
-<div id="quiz-screen" class="hidden bg-white p-6 rounded-xl shadow-lg w-full max-w-2xl">
+            <!-- Badge Icon Selector (Phosphor Icons) -->
+            <div class="space-y-2">
+                <span class="block text-xs font-extrabold uppercase text-slate-600 tracking-wider">
+                    Pilih Lencana Belajarmu:
+                </span>
+                <div class="flex justify-center gap-2.5 flex-wrap" role="radiogroup" aria-label="Pilih Lencana Belajarmu">
+                    <button type="button" class="avatar-btn w-12 h-12 rounded-2xl border-2 border-blue-600 bg-blue-50 text-blue-600 flex items-center justify-center transition-transform hover:scale-105 cursor-pointer" data-avatar="ph-robot" aria-label="Lencana Robot" aria-checked="true">
+                        <i class="ph-duotone ph-robot text-2xl" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="avatar-btn w-12 h-12 rounded-2xl border-2 border-slate-200 bg-slate-50 text-slate-700 flex items-center justify-center transition-transform hover:scale-105 cursor-pointer" data-avatar="ph-rocket-launch" aria-label="Lencana Roket" aria-checked="false">
+                        <i class="ph-duotone ph-rocket-launch text-2xl" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="avatar-btn w-12 h-12 rounded-2xl border-2 border-slate-200 bg-slate-50 text-slate-700 flex items-center justify-center transition-transform hover:scale-105 cursor-pointer" data-avatar="ph-star" aria-label="Lencana Bintang" aria-checked="false">
+                        <i class="ph-duotone ph-star text-2xl" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="avatar-btn w-12 h-12 rounded-2xl border-2 border-slate-200 bg-slate-50 text-slate-700 flex items-center justify-center transition-transform hover:scale-105 cursor-pointer" data-avatar="ph-palette" aria-label="Lencana Lukis" aria-checked="false">
+                        <i class="ph-duotone ph-palette text-2xl" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="avatar-btn w-12 h-12 rounded-2xl border-2 border-slate-200 bg-slate-50 text-slate-700 flex items-center justify-center transition-transform hover:scale-105 cursor-pointer" data-avatar="ph-music-notes" aria-label="Lencana Musik" aria-checked="false">
+                        <i class="ph-duotone ph-music-notes text-2xl" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="avatar-btn w-12 h-12 rounded-2xl border-2 border-slate-200 bg-slate-50 text-slate-700 flex items-center justify-center transition-transform hover:scale-105 cursor-pointer" data-avatar="ph-trophy" aria-label="Lencana Piala" aria-checked="false">
+                        <i class="ph-duotone ph-trophy text-2xl" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
 
-    <p class="text-sm text-gray-600 mb-4">
-        Halo, <span id="nama-user" class="font-semibold"></span> 👋
-    </p>
+            <!-- Input Nama -->
+            <div class="space-y-2 text-left">
+                <label for="nama-input" class="block text-xs font-extrabold uppercase text-slate-700 tracking-wider">
+                    Nama Panggilan Kamu:
+                </label>
+                <input
+                    type="text"
+                    id="nama-input"
+                    class="w-full px-5 py-3.5 border-2 border-blue-200 rounded-2xl text-base md:text-lg font-bold text-slate-900 placeholder-slate-400 focus:border-blue-600 transition-all text-center bg-white"
+                    placeholder="Contoh: Budi atau Siti"
+                    maxlength="50"
+                    autocomplete="off"
+                >
+            </div>
 
-    <div class="mb-6">
-        <div class="flex justify-between mb-2">
-            <span class="text-sm font-medium text-blue-600">
-                Pertanyaan <span id="current-question">1</span>/10
-            </span>
-            <span class="text-sm font-medium text-blue-600">
-                <span id="progress-percent">0</span>%
-            </span>
+            <button
+                id="start-btn"
+                type="button"
+                class="clay-btn-primary w-full py-4 font-extrabold text-lg flex items-center justify-center gap-2"
+            >
+                <span>Yuk Mulai Kuis!</span>
+                <i class="ph-bold ph-arrow-right text-xl" aria-hidden="true"></i>
+            </button>
+
+            <p class="text-xs text-slate-600 font-bold flex items-center justify-center gap-1.5">
+                <i class="ph-duotone ph-clock text-base text-blue-600" aria-hidden="true"></i>
+                <span>Hanya butuh 3 menit • Tidak ada jawaban salah!</span>
+            </p>
+
         </div>
-        <div class="w-full bg-gray-200 rounded-full h-2">
-            <div id="progress-fill" class="bg-blue-500 h-2 rounded-full"></div>
+
+        <!-- 2. QUIZ SCREEN (Interaktif & Ramah Anak) -->
+        <div id="quiz-screen" class="hidden clay-card p-6 md:p-10 w-full max-w-2xl space-y-6">
+            
+            <!-- User Info & Progress Header -->
+            <div class="space-y-3 pb-3 border-b-2 border-blue-100">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 border-2 border-blue-200 text-blue-700 flex items-center justify-center">
+                            <i id="user-avatar-badge" class="ph-duotone ph-robot text-xl" aria-hidden="true"></i>
+                        </div>
+                        <span class="text-sm font-bold text-slate-700">
+                            Semangat, <span id="nama-user" class="text-blue-700 font-extrabold"></span>!
+                        </span>
+                    </div>
+
+                    <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-blue-100 text-blue-800 border border-blue-200">
+                        <i class="ph-duotone ph-list-numbers text-sm" aria-hidden="true"></i>
+                        <span>Soal <span id="current-question">1</span>/10</span>
+                    </span>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="space-y-1">
+                    <div class="w-full bg-slate-100 border border-slate-200 rounded-full h-3.5 p-0.5 overflow-hidden">
+                        <div id="progress-fill" class="bg-gradient-to-r from-blue-600 via-blue-500 to-amber-400 h-full rounded-full transition-all duration-300 w-[10%]"></div>
+                    </div>
+                    <div class="flex justify-between text-xs font-bold text-slate-600">
+                        <span>Progres Kuis</span>
+                        <span><span id="progress-percent">10</span>%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-blue-50/70 border-2 border-blue-200 rounded-2xl p-5 md:p-6 text-center">
+                <h2 id="question-text" class="text-xl md:text-2xl font-extrabold font-display text-slate-900 leading-snug">
+                    Memuat pertanyaan...
+                </h2>
+            </div>
+
+            <!-- 3 Options Buttons -->
+            <div class="space-y-3.5" role="radiogroup" aria-labelledby="question-text">
+                
+                <!-- Option A -->
+                <button type="button" class="answer-btn group w-full text-left p-4 md:p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-blue-500 hover:bg-blue-50/50 transition-all flex items-center justify-between cursor-pointer" data-style="visual">
+                    <div class="flex items-center space-x-3.5">
+                        <span class="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 text-blue-800 font-extrabold text-sm flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            A
+                        </span>
+                        <span class="text-sm md:text-base font-bold text-slate-800 option-label"></span>
+                    </div>
+                    <i class="ph-duotone ph-eye text-2xl text-blue-600 shrink-0 ml-2" aria-hidden="true"></i>
+                </button>
+
+                <!-- Option B -->
+                <button type="button" class="answer-btn group w-full text-left p-4 md:p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-amber-500 hover:bg-amber-50/50 transition-all flex items-center justify-between cursor-pointer" data-style="auditory">
+                    <div class="flex items-center space-x-3.5">
+                        <span class="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 text-amber-900 font-extrabold text-sm flex items-center justify-center shrink-0 group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                            B
+                        </span>
+                        <span class="text-sm md:text-base font-bold text-slate-800 option-label"></span>
+                    </div>
+                    <i class="ph-duotone ph-headphones text-2xl text-amber-600 shrink-0 ml-2" aria-hidden="true"></i>
+                </button>
+
+                <!-- Option C -->
+                <button type="button" class="answer-btn group w-full text-left p-4 md:p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-emerald-500 hover:bg-emerald-50/50 transition-all flex items-center justify-between cursor-pointer" data-style="kinesthetic">
+                    <div class="flex items-center space-x-3.5">
+                        <span class="w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-200 text-emerald-900 font-extrabold text-sm flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                            C
+                        </span>
+                        <span class="text-sm md:text-base font-bold text-slate-800 option-label"></span>
+                    </div>
+                    <i class="ph-duotone ph-hand-pointing text-2xl text-emerald-600 shrink-0 ml-2" aria-hidden="true"></i>
+                </button>
+
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="flex justify-between items-center pt-2">
+                <button id="prev-btn" type="button" class="opacity-0 px-5 py-3 rounded-xl font-bold text-sm bg-slate-100 border-2 border-slate-200 text-slate-700 hover:bg-slate-200 transition-all flex items-center gap-2 cursor-pointer">
+                    <i class="ph-bold ph-arrow-left text-base" aria-hidden="true"></i>
+                    <span>Sebelumnya</span>
+                </button>
+
+                <button id="next-btn" type="button" class="clay-btn-primary px-7 py-3.5 font-extrabold text-sm md:text-base flex items-center gap-2">
+                    <span>Selanjutnya</span>
+                    <i class="ph-bold ph-arrow-right text-base" aria-hidden="true"></i>
+                </button>
+            </div>
+
         </div>
-    </div>
 
-    <h2 id="question-text" class="text-xl font-semibold mb-6"></h2>
+    </main>
 
-    <div class="space-y-4 mb-8">
-        <button class="answer-btn w-full text-left p-4 rounded-lg border bg-blue-50 hover:bg-blue-100 transition" data-style="visual"></button>
-        <button class="answer-btn w-full text-left p-4 rounded-lg border bg-blue-50 hover:bg-blue-100 transition" data-style="auditory"></button>
-        <button class="answer-btn w-full text-left p-4 rounded-lg border bg-blue-50 hover:bg-blue-100 transition" data-style="kinesthetic"></button>
-    </div>
+    <!-- Footer -->
+    <footer class="bg-white border-t-2 border-blue-100 py-4 text-center text-xs text-slate-600 font-bold">
+        EduBot Gaya Belajar Anak • Menyenangkan &amp; Bebas Stres
+    </footer>
 
-    <div class="flex justify-between">
-        <button id="prev-btn" class="opacity-0 bg-gray-200 px-4 py-2 rounded-lg">
-            <i data-feather="arrow-left"></i> Sebelumnya
-        </button>
-        <button id="next-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg">
-            Selanjutnya <i data-feather="arrow-right"></i>
-        </button>
-    </div>
-
-</div>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

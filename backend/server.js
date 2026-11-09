@@ -1,62 +1,61 @@
 const express = require("express");
 const cors = require("cors");
-const axios = require("axios");
-const db = require("./db"); 
+const helmet = require("helmet");
+const apiRoutes = require("./routes/api");
+const { notFoundHandler, globalErrorHandler } = require("./middlewares/errorHandler");
 
 const app = express();
 
+// 1. Keamanan HTTP Headers
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+  })
+);
+
+// 2. CORS (Cross-Origin Resource Sharing)
+app.use(cors());
+
+// 3. Request Logging sederhana
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
   next();
 });
 
-app.use(cors());
-app.use(express.json());
+// 4. Body parser dengan batas ukuran payload
+app.use(express.json({ limit: "100kb" }));
 
-const PORT = process.env.PORT || 3000;
-const ML_URL = process.env.ML_URL;
+const PORT = Number(process.env.PORT) || 3000;
 
+// 5. Landing / Root status endpoint
 app.get("/", (req, res) => {
-  res.send("🚀 Backend Edubot is running and ready!");
-});
-
-app.post("/simpan-hasil", async (req, res) => {
-  console.log("📦 Data diterima dari Frontend:", req.body);
-
-  const { nama, visual, auditory, kinesthetic, hasil } = req.body;
-  let hasilFinal = hasil;
-
-  if (ML_URL) {
-    try {
-      console.log("🤖 Menghubungi ML Server...");
-      const mlResponse = await axios.post(`${ML_URL}/predict`, {
-        visual, auditory, kinesthetic
-      }, { timeout: 4000 });
-
-      if (mlResponse.data?.hasil) {
-        hasilFinal = mlResponse.data.hasil;
-        console.log("✅ ML Berhasil: ", hasilFinal);
-      }
-    } catch (err) {
-      console.warn("⚠️ ML Gagal/Timeout, menggunakan hasil lokal.");
+  res.json({
+    message: "🚀 Backend Edubot is running and ready!",
+    version: "1.1.0",
+    docs: {
+      health: "/health",
+      api_prefix: "/api"
     }
-  }
-
-  const query = `
-    INSERT INTO hasil_tes (nama, visual, auditory, kinesthetic, hasil) 
-    VALUES (?, ?, ?, ?, ?)
-  `;
-
-  db.query(query, [nama, visual, auditory, kinesthetic, hasilFinal], (err, result) => {
-    if (err) {
-      console.error("❌ ERROR DATABASE:", err.message);
-      return res.status(500).json({ success: false, error: err.message });
-    }
-    console.log("✅ DATA TERSIMPAN! ID:", result.insertId);
-    res.json({ success: true, hasil: hasilFinal });
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server aktif di port ${PORT}`);
-});
+// 6. Registrasi API Routes
+// Dukungan backward compatibility untuk route root (/simpan-hasil dan /health)
+app.use("/", apiRoutes);
+// Route berstandar /api/
+app.use("/api", apiRoutes);
+
+// 7. Penanganan 404 & Global Error Middleware
+app.use(notFoundHandler);
+app.use(globalErrorHandler);
+
+// Start server jika dijalankan langsung
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server aktif di port ${PORT}`);
+    console.log(`📍 Health Check : http://localhost:${PORT}/health`);
+    console.log(`📍 API Endpoint : http://localhost:${PORT}/api/simpan-hasil`);
+  });
+}
+
+module.exports = app;

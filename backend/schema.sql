@@ -1,0 +1,13 @@
+CREATE DATABASE IF NOT EXISTS edubot_db;
+USE edubot_db;
+
+CREATE TABLE IF NOT EXISTS hasil_tes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nama VARCHAR(255) NOT NULL,
+    visual INT NOT NULL,
+    auditory INT NOT NULL,
+    kinesthetic INT NOT NULL,
+    hasil VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+

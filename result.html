@@ -2,167 +2,382 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Hasil Tes Gaya Belajar - Edubot</title>
+    <title>Hasil Profil Belajar Cerdas - EduBot</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <script src="components/navbar.js"></script>
 </head>
 
-<body class="bg-gradient-to-b from-blue-50 to-yellow-100 min-h-screen">
+<body class="bg-[#EFF6FF] min-h-screen flex flex-col justify-between">
 
-<custom-navbar></custom-navbar>
+    <custom-navbar class="no-print"></custom-navbar>
 
-<div class="flex justify-center py-10 px-4">
-<div class="bg-white p-8 rounded-2xl shadow-lg max-w-xl w-full text-center">
+    <main class="max-w-3xl mx-auto px-4 py-8 md:py-12 w-full flex-grow">
+        
+        <div class="clay-card p-6 sm:p-10 space-y-8">
+            
+            <!-- Header Section -->
+            <div class="text-center space-y-3">
+                
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200" id="badge-container">
+                    <i id="source-icon" class="ph-duotone ph-cpu text-base" aria-hidden="true"></i>
+                    <span id="source-badge">Dianalisis oleh AI Machine Learning</span>
+                </div>
 
-    <h1 class="text-2xl md:text-3xl font-bold text-blue-600 mb-3">
-        🎉 Hasil Tes Gaya Belajar 🎉
-    </h1>
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-600 border-2 border-blue-700 shadow-[0_4px_0_0_#1E40AF] flex items-center justify-center text-white">
+                    <i id="avatar-display" class="ph-duotone ph-robot text-3xl" aria-hidden="true"></i>
+                </div>
 
-    <p class="text-gray-700 text-lg mb-1">
-        Halo, <span id="nama-user" class="font-bold text-blue-600"></span> 👋
-    </p>
+                <h1 class="text-2xl sm:text-4xl font-extrabold font-display text-slate-900">
+                    Selamat, <span id="nama-user" class="text-blue-600">Peserta</span>!
+                </h1>
 
-    <p class="text-gray-600 mb-6">
-        Berikut adalah hasil tes gaya belajar kamu:
-    </p>
+                <p class="text-sm md:text-base text-slate-600 font-semibold max-w-lg mx-auto">
+                    Kuis telah selesai dianalisis. Inilah cara belajar yang paling pas dan seru untuk dirimu:
+                </p>
 
-    <div class="mb-4">
-        <i id="result-icon" class="w-14 h-14 mx-auto text-blue-500"></i>
-    </div>
+            </div>
 
-    <h2 id="result-title" class="text-xl font-bold mb-3"></h2>
+            <!-- Main Dominant Card with Vector Illustration -->
+            <div id="dominant-card" class="bg-blue-50/90 border-2 border-blue-200 rounded-3xl p-6 sm:p-8 text-center space-y-5">
+                <div class="bg-white border-2 border-blue-100 rounded-2xl p-4 max-w-xs mx-auto flex items-center justify-center shadow-sm">
+                    <img id="result-illustration" src="images/hasil-selamat.svg" alt="Ilustrasi hasil gaya belajar siswa" class="h-40 w-auto object-contain" width="240" height="160">
+                </div>
+                <div class="space-y-2">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-600 text-white text-xs font-extrabold uppercase tracking-wider">
+                        <i id="result-icon" class="ph-duotone ph-eye text-base" aria-hidden="true"></i>
+                        <span>Profil Modalitas Utama</span>
+                    </div>
+                    <h2 id="result-title" class="text-2xl sm:text-3xl font-extrabold font-display text-slate-900">Gaya Belajar Visual</h2>
+                    <p id="result-desc" class="text-slate-700 text-sm sm:text-base leading-relaxed max-w-xl mx-auto font-semibold"></p>
+                </div>
+            </div>
 
-    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-        <p id="result-desc" class="text-gray-700 leading-relaxed"></p>
-    </div>
+            <!-- Visualization & Progress Bars -->
+            <div class="bg-slate-50 border-2 border-slate-200 rounded-3xl p-6 space-y-6">
+                
+                <div class="text-center space-y-1">
+                    <h3 class="text-lg sm:text-xl font-extrabold font-display text-slate-900 flex items-center justify-center gap-2">
+                        <i class="ph-duotone ph-chart-donut text-2xl text-blue-600" aria-hidden="true"></i>
+                        <span>Komposisi Modalitas Belajar Kamu</span>
+                    </h3>
+                    <p class="text-xs text-slate-600 font-semibold">Setiap modalitas menunjukkan aktivitas yang melengkapi gaya belajarmu:</p>
+                </div>
 
-    <div class="bg-yellow-50 border border-yellow-200 p-5 rounded-xl text-left mb-6">
-        <h3 class="font-semibold text-gray-800 mb-3">
-            📚 Tips Belajar yang Cocok Buat Kamu:
-        </h3>
-        <ul id="result-tips" class="list-disc list-inside text-gray-700 space-y-1"></ul>
-    </div>
+                <!-- Donut Chart -->
+                <div class="w-full max-w-xs mx-auto h-52 flex items-center justify-center">
+                    <canvas id="vakChart" aria-label="Grafik komposisi gaya belajar Visual, Auditori, dan Kinestetik" role="img"></canvas>
+                </div>
 
-    <p class="text-gray-700 mb-8">
-        ✨ Ingat ya, setiap anak itu pintar dengan caranya masing-masing.  
-        Terus semangat belajar dan jangan takut mencoba hal baru! ✨
-    </p>
+                <!-- Metric Bars -->
+                <div class="space-y-3 pt-2">
+                    <!-- Visual Bar -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-extrabold">
+                            <span class="text-blue-700 flex items-center gap-1.5">
+                                <i class="ph-duotone ph-eye text-base" aria-hidden="true"></i>
+                                <span>Visual (Melihat)</span>
+                            </span>
+                            <span id="pct-visual" class="text-slate-700">40%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div id="bar-visual" class="bg-blue-600 h-full rounded-full transition-all duration-500 w-[40%]"></div>
+                        </div>
+                    </div>
 
-    <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <a href="quiz.html"
-           class="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold transition">
-            🔁 Ulangi Tes
-        </a>
-        <a href="index.html"
-           class="bg-gray-200 hover:bg-gray-300 px-5 py-2 rounded-lg font-semibold transition">
-            🏠 Kembali ke Beranda
-        </a>
-    </div>
+                    <!-- Auditory Bar -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-extrabold">
+                            <span class="text-amber-700 flex items-center gap-1.5">
+                                <i class="ph-duotone ph-headphones text-base" aria-hidden="true"></i>
+                                <span>Auditori (Mendengar)</span>
+                            </span>
+                            <span id="pct-auditory" class="text-slate-700">30%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div id="bar-auditory" class="bg-amber-500 h-full rounded-full transition-all duration-500 w-[30%]"></div>
+                        </div>
+                    </div>
 
-</div>
-</div>
+                    <!-- Kinesthetic Bar -->
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-extrabold">
+                            <span class="text-emerald-700 flex items-center gap-1.5">
+                                <i class="ph-duotone ph-hand-pointing text-base" aria-hidden="true"></i>
+                                <span>Kinestetik (Bergerak)</span>
+                            </span>
+                            <span id="pct-kinesthetic" class="text-slate-700">30%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div id="bar-kinesthetic" class="bg-emerald-600 h-full rounded-full transition-all duration-500 w-[30%]"></div>
+                        </div>
+                    </div>
+                </div>
 
-<script>
-feather.replace();
+            </div>
 
-const hasilData = {
-    "visual": {
-        title: "Gaya Belajar Visual 👀",
-        icon: "eye",
-        desc: "Kamu adalah anak yang hebat dalam belajar dengan melihat. Gambar, warna, dan video sangat membantumu memahami pelajaran. Jika kamu melihat sesuatu, otakmu cepat mengingatnya!",
-        tips: [
-            "Gunakan gambar atau ilustrasi saat belajar",
-            "Pakai warna-warna pada catatan",
-            "Belajar lewat video edukasi"
-        ]
-    },
-    "auditory": {
-        title: "Gaya Belajar Auditori 🎧",
-        icon: "headphones",
-        desc: "Kamu belajar paling baik dengan mendengarkan. Saat guru menjelaskan atau saat kamu berdiskusi, kamu bisa lebih cepat memahami pelajaran.",
-        tips: [
-            "Belajar sambil mendengarkan penjelasan",
-            "Diskusi dengan teman",
-            "Membaca pelajaran dengan suara keras"
-        ]
-    },
-    "kinesthetic": {
-        title: "Gaya Belajar Kinestetik 🤸",
-        icon: "activity",
-        desc: "Kamu adalah anak yang aktif dan suka bergerak. Kamu akan lebih mudah belajar jika langsung mencoba, mempraktikkan, atau bermain sambil belajar.",
-        tips: [
-            "Belajar sambil praktik langsung",
-            "Gunakan alat peraga",
-            "Belajar sambil bergerak"
-        ]
-    },
-    "visual-auditory": {
-        title: "Visual & Auditori 👀🎧",
-        icon: "layers",
-        desc: "Kamu hebat karena bisa belajar dengan melihat dan mendengarkan sekaligus. Video dan penjelasan guru sangat cocok untukmu.",
-        tips: [
-            "Belajar lewat video pembelajaran",
-            "Mendengarkan penjelasan sambil melihat gambar",
-            "Presentasi bergambar"
-        ]
-    },
-    "visual-kinesthetic": {
-        title: "Visual & Kinestetik 👀🤸",
-        icon: "move",
-        desc: "Kamu belajar paling baik jika melihat lalu langsung mencoba. Kamu suka belajar dengan gambar dan aktivitas.",
-        tips: [
-            "Belajar dengan diagram lalu praktik",
-            "Gunakan alat peraga",
-            "Eksperimen sederhana"
-        ]
-    },
-    "auditory-kinesthetic": {
-        title: "Auditori & Kinestetik 🎧🤸",
-        icon: "mic",
-        desc: "Kamu senang belajar sambil mendengarkan dan bergerak. Diskusi dan permainan edukatif sangat cocok untukmu.",
-        tips: [
-            "Diskusi aktif dengan teman",
-            "Belajar sambil bermain peran",
-            "Simulasi dan praktik"
-        ]
-    },
-    "visual-auditory-kinesthetic": {
-        title: "Gaya Belajar Campuran 🌈",
-        icon: "grid",
-        desc: "Kamu luar biasa karena bisa belajar dengan berbagai cara! Kamu fleksibel dan mudah menyesuaikan diri dengan banyak metode belajar.",
-        tips: [
-            "Gabungkan melihat, mendengar, dan praktik",
-            "Belajar dengan cara yang bervariasi",
-            "Cari cara belajar yang paling kamu suka"
-        ]
+            <!-- Tips Belajar Seru -->
+            <div class="bg-amber-50/80 border-2 border-amber-200 rounded-3xl p-6 sm:p-8 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 border-2 border-amber-300 text-amber-800 flex items-center justify-center shrink-0">
+                        <i class="ph-duotone ph-lightbulb-filament text-2xl" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-extrabold font-display text-slate-900">Tips Belajar Paling Cocok Buatmu</h3>
+                        <p class="text-xs text-slate-600 font-semibold">Cobalah langkah mudah ini saat belajar di sekolah atau di rumah:</p>
+                    </div>
+                </div>
+
+                <ul id="result-tips" class="space-y-3 text-slate-800 text-sm sm:text-base font-semibold"></ul>
+            </div>
+
+            <!-- Affirmation Message -->
+            <div class="p-4 rounded-2xl bg-blue-50 border-2 border-blue-100 text-center space-y-1">
+                <p class="text-xs sm:text-sm font-extrabold text-blue-900 flex items-center justify-center gap-1.5">
+                    <i class="ph-duotone ph-sparkle text-base text-blue-600" aria-hidden="true"></i>
+                    <span>Pesan EduBot untuk Kamu:</span>
+                </p>
+                <p class="text-xs sm:text-sm text-blue-800 font-semibold">
+                    Setiap anak istimewa dan punya cara hebat untuk memahami dunia. Gaya belajar adalah pilihan aktivitas yang paling menyenangkan untukmu, dan kamu selalu bisa mencoba semuanya!
+                </p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-2 no-print">
+                <button type="button" onclick="window.print()" class="clay-btn-secondary flex-1 py-3.5 font-extrabold text-sm flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-printer text-lg" aria-hidden="true"></i>
+                    <span>Cetak / Simpan Hasil</span>
+                </button>
+                <a href="quiz.html" class="clay-btn-primary flex-1 py-3.5 font-extrabold text-sm text-center flex items-center justify-center gap-2">
+                    <i class="ph-bold ph-arrows-clockwise text-lg" aria-hidden="true"></i>
+                    <span>Ulangi Tes Kuis</span>
+                </a>
+                <a href="index.html" class="px-6 py-3.5 rounded-2xl border-2 border-slate-200 font-bold text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all text-center flex items-center justify-center gap-2 cursor-pointer">
+                    <i class="ph-bold ph-house-line text-lg" aria-hidden="true"></i>
+                    <span>Beranda</span>
+                </a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t-2 border-blue-100 py-4 text-center text-xs text-slate-600 font-bold no-print">
+        EduBot Gaya Belajar Anak • Hasil Asesmen Profil Modalitas VAK
+    </footer>
+
+    <script>
+    // Confetti Celebration (hormati prefers-reduced-motion)
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!prefersReducedMotion && typeof confetti === "function") {
+        try {
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        } catch (_) {}
     }
-};
 
-const params = new URLSearchParams(window.location.search);
-const style = params.get("style");
+    const hasilData = {
+        "visual": {
+            title: "Gaya Belajar Visual",
+            icon: "ph-eye",
+            illustration: "images/gaya-visual.svg",
+            desc: "Kamu adalah anak yang hebat dalam mengingat lewat apa yang kamu lihat! Gambar, diagram berwarna, video edukasi, dan catatan rapi sangat membantumu cepat paham.",
+            tips: [
+                "Gunakan spidol atau stabilo warna-warni saat menandai catatan penting.",
+                "Tonton video pembelajaran atau animasi visual saat mempelajari topik baru.",
+                "Gambarkan diagram alur atau peta konsep (mind mapping) untuk materi yang panjang."
+            ]
+        },
+        "auditory": {
+            title: "Gaya Belajar Auditori",
+            icon: "ph-headphones",
+            illustration: "images/gaya-auditori.svg",
+            desc: "Kamu belajar paling baik dengan mendengarkan! Penjelasan cerita guru yang seru, diskusi bareng teman, dan membaca sambil bersuara membuat ingatanmu bekerja sangat cepat.",
+            tips: [
+                "Dengarkan baik-baik saat bapak/ibu guru bercerita atau menjelaskan di kelas.",
+                "Coba membaca rangkuman pelajaran dengan suara keras dan jelas di rumah.",
+                "Buat lagu pendek atau irama berima untuk menghafal materi yang rumit."
+            ]
+        },
+        "kinesthetic": {
+            title: "Gaya Belajar Kinestetik",
+            icon: "ph-hand-pointing",
+            illustration: "images/gaya-kinestetik.svg",
+            desc: "Kamu adalah anak yang aktif dan bersemangat tinggi! Kamu paling cepat mengerti pelajaran jika langsung mempraktikkan, memegang alat peraga, atau belajar sambil beraktivitas.",
+            tips: [
+                "Belajar sambil melakukan eksperimen sederhana atau prakarya tangan.",
+                "Gunakan balok hitung, bola dunia, atau model peraga yang bisa disentuh langsung.",
+                "Selipkan waktu istirahat sejenak untuk berjalan dan peregangan tubuh saat belajar."
+            ]
+        },
+        "visual-auditory": {
+            title: "Visual & Auditori",
+            icon: "ph-monitor-play",
+            illustration: "images/hasil-selamat.svg",
+            desc: "Kamu hebat karena bisa memadukan melihat dan mendengar sekaligus! Video pembelajaran yang bersuara jernih dan penjelasan bergambar sangat pas untukmu.",
+            tips: [
+                "Tonton video edukasi yang memiliki narasi suara serta ilustrasi yang jelas.",
+                "Dengarkan penjelasan guru sambil mengamati gambar di papan tulis.",
+                "Presentasikan hasil belajarmu ke teman atau keluarga dengan menunjukkan gambar."
+            ]
+        },
+        "visual-kinesthetic": {
+            title: "Visual & Kinestetik",
+            icon: "ph-compass-tool",
+            illustration: "images/gaya-kinestetik.svg",
+            desc: "Kamu belajar paling baik jika melihat contoh lalu langsung mencobanya sendiri! Kamu senang membuat proyek prakarya, diagram alur, dan eksperimen.",
+            tips: [
+                "Perhatikan contoh gambar lalu langsung coba buat sendiri praktiknya.",
+                "Gunakan flashcard bergambar dan balok susun warna-warni.",
+                "Lakukan eksperimen sederhana bersama orang tua atau guru."
+            ]
+        },
+        "auditory-kinesthetic": {
+            title: "Auditori & Kinestetik",
+            icon: "ph-microphone-stage",
+            illustration: "images/hasil-selamat.svg",
+            desc: "Kamu senang belajar sambil mendengarkan dan aktif bergerak! Permainan peran (roleplay), kuis tebak kata ceria, dan simulasi sangat cocok untukmu.",
+            tips: [
+                "Belajar sambil bermain peran (roleplay) dengan teman sebaya.",
+                "Ikuti kuis interaktif yang mengajakmu berbicara dan bergerak.",
+                "Ucapkan hafalan pelajaran sambil berjalan santai di ruangan."
+            ]
+        },
+        "visual-auditory-kinesthetic": {
+            title: "Gaya Belajar Campuran (Multimodal)",
+            icon: "ph-circles-three-plus",
+            illustration: "images/hasil-selamat.svg",
+            desc: "Luar biasa! Kamu adalah pembelajar serbaguna yang fleksibel. Kamu dapat menikmati belajar lewat melihat gambar, mendengar penjelasan, maupun praktik langsung!",
+            tips: [
+                "Kombinasikan buku cerita bergambar, cerita audio, dan eksperimen nyata.",
+                "Pilihlah cara belajar yang paling membuatmu nyaman pada setiap mata pelajaran.",
+                "Eksplorasi metode-metode baru yang kreatif bersama teman-temanmu."
+            ]
+        }
+    };
 
-const nama = localStorage.getItem("nama_peserta") || "Peserta";
-document.getElementById("nama-user").textContent = nama;
+    const params = new URLSearchParams(window.location.search);
+    const styleParam = params.get("style");
+    const sourceParam = params.get("source") || localStorage.getItem("hasil_source") || "ml";
 
-const result = hasilData[style] || hasilData["visual-auditory-kinesthetic"];
-document.getElementById("result-title").textContent = result.title;
-document.getElementById("result-desc").textContent = result.desc;
-document.getElementById("result-icon").setAttribute("data-feather", result.icon);
+    const nama = localStorage.getItem("nama_peserta") || "Peserta Cilik";
+    const avatarIcon = localStorage.getItem("user_avatar_icon") || "ph-robot";
 
-const tipsEl = document.getElementById("result-tips");
-result.tips.forEach(tip => {
-    const li = document.createElement("li");
-    li.textContent = tip;
-    tipsEl.appendChild(li);
-});
+    document.getElementById("nama-user").textContent = nama;
+    const avatarDisplay = document.getElementById("avatar-display");
+    if (avatarDisplay) {
+        avatarDisplay.className = `ph-duotone ${avatarIcon} text-3xl`;
+    }
 
-feather.replace();
-</script>
+    // Badge Sumber Analisis
+    const badgeEl = document.getElementById("source-badge");
+    const sourceIcon = document.getElementById("source-icon");
+    if (sourceParam === "offline" || sourceParam === "offline-rule-based") {
+        badgeEl.textContent = "Analisis Mandiri (Mode Offline)";
+        sourceIcon.className = "ph-duotone ph-lightning text-base";
+        badgeEl.parentElement.className = "inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200";
+    } else if (sourceParam === "rule-based-fallback") {
+        badgeEl.textContent = "Analisis Aturan Heuristik";
+        sourceIcon.className = "ph-duotone ph-sliders-horizontal text-base";
+        badgeEl.parentElement.className = "inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-blue-100 text-blue-800 border border-blue-200";
+    } else {
+        badgeEl.textContent = "Dianalisis oleh AI Machine Learning";
+        sourceIcon.className = "ph-duotone ph-cpu text-base";
+        badgeEl.parentElement.className = "inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200";
+    }
+
+    const currentResult = hasilData[styleParam] || hasilData["visual-auditory-kinesthetic"];
+    document.getElementById("result-title").textContent = currentResult.title;
+    document.getElementById("result-desc").textContent = currentResult.desc;
+    document.getElementById("result-icon").className = `ph-duotone ${currentResult.icon} text-base`;
+    document.getElementById("result-illustration").src = currentResult.illustration;
+
+    const tipsContainer = document.getElementById("result-tips");
+    currentResult.tips.forEach(tip => {
+        const li = document.createElement("li");
+        li.className = "flex items-start gap-2.5 bg-white/80 p-3.5 rounded-2xl border border-amber-200";
+        li.innerHTML = `<i class="ph-fill ph-check-circle text-xl text-amber-600 shrink-0 mt-0.5" aria-hidden="true"></i> <span>${tip}</span>`;
+        tipsContainer.appendChild(li);
+    });
+
+    // Perhitungan Skor & Persentase
+    const vScore = Number(localStorage.getItem("skor_visual")) || 4;
+    const aScore = Number(localStorage.getItem("skor_auditory")) || 3;
+    const kScore = Number(localStorage.getItem("skor_kinesthetic")) || 3;
+    const totalScore = Math.max(vScore + aScore + kScore, 1);
+
+    const vPct = Math.round((vScore / totalScore) * 100);
+    const aPct = Math.round((aScore / totalScore) * 100);
+    const kPct = Math.round((kScore / totalScore) * 100);
+
+    // Update Bar Nilai
+    document.getElementById("pct-visual").textContent = `${vScore} poin (${vPct}%)`;
+    document.getElementById("bar-visual").style.width = `${vPct}%`;
+
+    document.getElementById("pct-auditory").textContent = `${aScore} poin (${aPct}%)`;
+    document.getElementById("bar-auditory").style.width = `${aPct}%`;
+
+    document.getElementById("pct-kinesthetic").textContent = `${kScore} poin (${kPct}%)`;
+    document.getElementById("bar-kinesthetic").style.width = `${kPct}%`;
+
+    // Render Donut Chart
+    const ctx = document.getElementById("vakChart");
+    if (ctx && typeof Chart !== "undefined") {
+        new Chart(ctx, {
+            type: "doughnut",
+            data: {
+                labels: ["Visual", "Auditori", "Kinestetik"],
+                datasets: [{
+                    data: [vScore, aScore, kScore],
+                    backgroundColor: [
+                        "#2563EB", // Biru
+                        "#F59E0B", // Kuning
+                        "#10B981"  // Hijau
+                    ],
+                    borderWidth: 3,
+                    borderColor: "#ffffff"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            boxWidth: 14,
+                            padding: 16,
+                            font: {
+                                family: "'Nunito', sans-serif",
+                                size: 13,
+                                weight: "700"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const val = context.raw || 0;
+                                const pct = Math.round((val / totalScore) * 100);
+                                return ` ${context.label}: ${val} poin (${pct}%)`;
+                            }
+                        }
+                    }
+                },
+                cutout: "62%"
+            }
+        });
+    }
+    </script>
 
 </body>
 </html>
